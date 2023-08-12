@@ -50,6 +50,12 @@
         <input type="number" class="form-control" id="heureTravaillees" placeholder="heureTravaillees"
                name="heureTravaillees" th:value="${tache.heureTravaillees}">
       </div>
+      <div class="form-group">
+        <label for="coll">collabs:</label>
+        <select class="form-control" id="coll" name="coll">
+          <option th:each="p : ${Collabs}" th:value="${p.email}" th:text="${p.email}"></option>
+        </select>
+      </div>
       <button type="submit" class="btn btn-primary">Save</button>
     </form>
   </div>

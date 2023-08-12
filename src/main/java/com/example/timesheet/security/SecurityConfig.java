@@ -42,8 +42,11 @@ public class SecurityConfig  {
         httpSecurity.rememberMe(withDefaults());
         httpSecurity.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/webjars/**","/h2-console/**").permitAll());
+        httpSecurity.authorizeHttpRequests((authz) -> authz.requestMatchers("/admin/**").hasRole("ADMIN"));
+
         httpSecurity.authorizeHttpRequests((authz) -> authz
                 .anyRequest().authenticated());
+        //httpSecurity.authorizeHttpRequests().requestMatchers("/admin/**").hasRole("ADMIN");
         httpSecurity.exceptionHandling(exceptionHandling ->
                 exceptionHandling.accessDeniedPage("/notAuthorized")
         );

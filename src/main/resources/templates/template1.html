@@ -16,11 +16,18 @@
       <li class="nav-item">
         <a class="nav-link active" th:href="@{/index}">Home</a>
       </li>
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown" >
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">taches</a>
         <ul class="dropdown-menu">
-          <li ><a class="dropdown-item" th:href="@{/form}">Nouveau</a></li>
+          <li ><a class="dropdown-item" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/form}">Nouveau</a></li>
           <li><a class="dropdown-item" th:href="@{/index}">Chercher</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Collabs</a>
+        <ul class="dropdown-menu">
+          <li ><a class="dropdown-item" th:href="@{/admin/formCollab}">Nouveau</a></li>
+          <li><a class="dropdown-item" th:href="@{/admin/collabs}">Chercher</a></li>
         </ul>
       </li>
     </ul>

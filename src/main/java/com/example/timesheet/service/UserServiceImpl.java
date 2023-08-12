@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,17 +32,16 @@ public class UserServiceImpl implements UserService {
         UserRepository.deleteByEmail(email);
     }
     @Override
-    public User addNewUser(String nom, String prenom,  String email,String password, String confirmPassword) {
-        User user = UserRepository.findByEmail(email);
+    public User addNewUser(User collab,String confirmPassword) {
+        User user = UserRepository.findByEmail(collab.getEmail());
         if(user!=null)throw new RuntimeException("this user already exist");
-        if (!password.equals(confirmPassword)) throw new RuntimeException("Password not match");
+        if (!collab.getPassword().equals(confirmPassword)) throw new RuntimeException("Password not match");
         user= user.builder()
                 .id(UUID.randomUUID().getMostSignificantBits())
-                .nom(nom)
-                .prenom(prenom)
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .email(email)
+                .nom(collab.getNom())
+                .prenom(collab.getPrenom())
+                .email(collab.getEmail())
+                .password(passwordEncoder.encode(collab.getPassword()))
                 .build();
         User savedUser= UserRepository.save(user);
         return savedUser;
@@ -58,10 +59,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addRoleToUser(String email, String role1) {
+    public void addRoleToUser(String email, String[] roles) {
         User user=UserRepository.findByEmail(email);
-        Role role=RoleRepository.findById(role1).get();
-        user.getRoles().add(role);
+        if (user.getRoles() == null) {
+            user.setRoles(new ArrayList<>()); // Initialize roles list if it's null
+        }
+        for (String role1:roles) {
+            Role role=RoleRepository.findById(role1).get();
+            user.getRoles().add(role);
+        }
+
+
+
 
 
     }

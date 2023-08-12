@@ -33,8 +33,9 @@ public class Tache {
     @Column(
             length = 50
     )
+    @Temporal(TemporalType.DATE)
     private Date dateDebut;
-
+    @Temporal(TemporalType.DATE)
     private Date dateFin;
 
 
