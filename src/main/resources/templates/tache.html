@@ -54,7 +54,7 @@
               </a>
             </td>
 
-            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <td >
               <a  class="btn btn-danger"
                   th:href="@{/edit(id=${p.id})}">
                 <i class="bi bi-pencil"></i>

@@ -11,7 +11,8 @@
 <div layout:fragment="content1">
   <div class="p-3">
     <form method="post" th:action="@{/save}">
-      <div>
+      <div >
+        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
       <div class="mb-3 mt-3">
         <label for="id" class="form-label">ID:</label>
         <label th:text="${tache.id}"></label>
@@ -38,14 +39,21 @@
         <input type="Date" class="form-control" id="dateFin" placeholder="dateFin"
                name="dateFin" th:value="${formattedDateFin}">
         <span class="text-danger" th:errors="${formattedDateFin}" th:value="${formattedDateFin}"></span>
-      </div>
+      </div></div>
+        <input type="hidden" name="dateDebut" th:value="${formattedDateDebut}">
+        <input type="hidden" name="dateFin" th:value="${formattedDateFin}">
+        <input type="hidden" name="titre" th:value="${tache.titre}">
+        <input type="hidden" name="description" th:value="${tache.description}">
+        <input type="hidden" name="id" th:value="${tache.id}">
+
         <div class="form-group">
           <label for="coll">collabs:</label>
           <select class="form-control" id="coll" name="coll">
-            <option  th:value="${selectedcollab}" th:text="${selectedcollab}" selected></option>
-            <option th:each="p : ${Collabs}" th:value="${p.email}" th:text="${p.email}"></option>
+            <option  th:value="${selectedcollab}" th:text="${selectedcollab}" selected ></option>
+            <option th:each="p : ${Collabs}" th:value="${p.email}" th:text="${p.email}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"></option>
           </select>
         </div>
+
       <div class="form-check mb-3" >
 
 
