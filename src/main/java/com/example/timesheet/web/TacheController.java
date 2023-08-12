@@ -7,6 +7,7 @@ import com.example.timesheet.entities.User;
 import com.example.timesheet.enums.Etats;
 import com.example.timesheet.repositories.TacheRepository;
 import com.example.timesheet.repositories.UserRepository;
+import com.example.timesheet.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -90,12 +91,20 @@ public class TacheController {
 
         return "redirect:/index";
     }
+
     @GetMapping("/edit")
 
     public String edit(@RequestParam(name = "id") Long id, Model model){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Tache tache=tacheRepository.findById(id).get();
         model.addAttribute("tache",tache);
+        model.addAttribute("selectedcollab",tache.getUser().getEmail());
+        List<User> Collabs = userRepository.findAll();
+        Collabs.remove(tache.getUser());
+        model.addAttribute("Collabs", Collabs);
+        User user=userRepository.findByEmail(tache.getUser().getEmail());
+        user.getTaches().remove(tache);
+        userRepository.save(user);
         List<Etats> etats= Arrays.asList(Etats.values());
         List<String> etats1=new ArrayList<>();
         for (Etats z:etats
