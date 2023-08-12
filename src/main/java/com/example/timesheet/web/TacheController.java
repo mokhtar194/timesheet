@@ -26,7 +26,8 @@ public class TacheController {
     @GetMapping(path="/index")
     public  String taches(Model model, @RequestParam(name="page",defaultValue = "0")int page
             , @RequestParam(name="size",defaultValue = "5")int size,
-                            @RequestParam(name="keyword",defaultValue = "")String keyword){
+                            @RequestParam(name="keyword",defaultValue = "")String keyword)
+    {
         Page<Tache> pageTaches=tacheRepository.findByTitreContains(keyword, PageRequest.of(page,size));
         model.addAttribute("listTaches",pageTaches.getContent());
         model.addAttribute("pages",new int[pageTaches.getTotalPages()]);

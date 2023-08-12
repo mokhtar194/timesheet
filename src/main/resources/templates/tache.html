@@ -19,6 +19,7 @@
         <form th:method="get" th:action="@{/index}">
           <label>key word</label>
           <input type="text" name="keyword" th:value="${keyword}">
+
           <button type="submit" class="btn btn-primary" ><i class="bi bi-search"></i>Cherche</button>
 
         </form>
@@ -45,14 +46,14 @@
             <td th:text="${p.etatAvancement}"></td>
             <td th:text="${p.heureTravaillees}"></td>
 
-            <td >
+            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
               <a onclick="return confirm('are you sure?')" class="btn btn-danger" th:href="@{/delete(id=${p.id},keyword=${keyword},page=${currentPage})}">
                 <i class="bi bi-trash"></i>
                 Delete
               </a>
             </td>
 
-            <td >
+            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
               <a  class="btn btn-danger"
                   th:href="@{/edit(id=${p.id})}">
                 <i class="bi bi-pencil"></i>
