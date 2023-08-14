@@ -14,20 +14,35 @@
 
   <div class="container mt-2">
     <div class="card">
-      <div class="card-header">Liste des taches </div>
-      <div class="card-body">
-        <form th:method="get" th:action="@{/index}">
-          <label>key word</label>
-          <input type="text" name="keyword" th:value="${keyword}">
-          <label>Start Date</label>
-          <input type="date" name="startDate" th:value="${startDate}">
+      <div class="card-header">
+        <form class="form-inline d-flex justify-content-between" th:method="get" th:action="@{/index}">
 
-          <label>End Date</label>
-          <input type="date" name="endDate" th:value="${endDate}">
 
-          <button type="submit" class="btn btn-primary" ><i class="bi bi-search"></i>Cherche</button>
+          <div class="d-flex align-items-center">
+          <label class="input-group-text">Start Date</label>
+            <div class=" align-items-center">
+
+            <input type="date" name="startDate" class="form-control ml-2" th:value="${startDate}">
+          </div>
+          </div>
+
+          <div class="d-flex align-items-center">
+            <label class="input-group-text">End Date</label>
+            <div class="d-flex align-items-center">
+
+            <input type="date" name="endDate" class="form-control ml-2" th:value="${endDate}">
+          </div>
+          </div>
+
+
+
+          <input class="form-control mr-2" style="width: 300px" name="keyword" type="search" placeholder="Keyword" aria-label="Search" th:value="${keyword}">
+          <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i>Search</button>
 
         </form>
+      </div>
+      <div class="card-body">
+
         <div class="row">
           <div th:each="p:${listTaches}" class="col-md-4 mb-4">
 
