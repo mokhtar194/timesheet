@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template1}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+</head>
+<body>
+<div layout:fragment="content1">
+
+
+  <div class="container mt-2">
+    <div class="card">
+      <div class="card-header">Liste des taches </div>
+      <div class="card-body">
+        <form th:method="get" th:action="@{/index}">
+          <label>key word</label>
+          <input type="text" name="keyword" th:value="${keyword}">
+          <label>Start Date</label>
+          <input type="date" name="startDate" th:value="${startDate}">
+
+          <label>End Date</label>
+          <input type="date" name="endDate" th:value="${endDate}">
+
+          <button type="submit" class="btn btn-primary" ><i class="bi bi-search"></i>Cherche</button>
+
+        </form>
+        <div class="row">
+          <div th:each="p:${listTaches}" class="col-md-4 mb-4">
+
+            <div class="card">
+              <div class="card-header"></div>
+
+              <div class="card-body">
+                <div  >
+                  <p th:if="${p.etatAvancement.name() == 'EN_ATTENTE'}">
+                    <span class="alert alert-danger m-0" style="border-radius: 50px;float: right;" >EN_ATTENTE        </span>
+                  </p>
+                  <p th:if="${p.etatAvancement.name() == 'EN_COURS'}">
+                    <span class="alert alert-primary m-0" style="border-radius: 50px;float: right">EN_COURS         </span>
+                  </p>
+                  <p th:if="${p.etatAvancement.name() == 'NON_COMMENCE'}">
+                    <span class="alert alert-warning m-0" style="border-radius: 50px;float: right">NON_COMMENCE</span>
+                  </p>
+                  <p th:if="${p.etatAvancement.name() == 'TERMINE'}">
+
+                    <span class="alert alert-success m-0" style="border-radius: 50px;float: right">TERMINE</span>
+                  </p>
+                  <br>
+
+                </div>
+                <h5 class="card-title" th:text="${p.titre}"></h5>
+                <p class="card-text" th:text="${p.description}"></p>
+                <p class="card-text" th:text="${p.getUser().email}"></p>
+                <p class="card-text" th:text="${p.dateDebut} +' '+'/'+' '+ ${p.dateFin}"></p>
+
+
+
+                <p class="card-text" th:text="${p.heureTravaillees}"></p>
+
+                  <div class="progress" th:if="${p.etatAvancement.name() == 'EN_ATTENTE'}">
+
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+
+
+                  <div class="progress" th:if="${p.etatAvancement.name() == 'EN_COURS'}">
+                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+
+                  <div class="progress" th:if="${p.etatAvancement.name() == 'NON_COMMENCE'}">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+
+
+                  <div class="progress" th:if="${p.etatAvancement.name() == 'TERMINE'}">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+
+
+
+                <br>
+
+
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                   onclick="return confirm('are you sure?')"
+                   class="btn btn-danger"
+                   th:href="@{/delete(id=${p.id},keyword=${keyword},page=${currentPage})}">
+                  <i class="bi bi-trash"></i>
+                  Delete
+                </a>
+                <a class="btn btn-success" th:href="@{/edit(id=${p.id})}">
+                  <i class="bi bi-pencil"></i>
+                  Modify
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="nav nav-pills">
+          <li th:each="page,status:${pages}">
+            <a th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+               th:text="${status.index}"
+               th:href="@{/index(page=${status.index},keyword=${keyword},startDate=${startDate},endDate=${endDate})}"
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

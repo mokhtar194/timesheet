@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,8 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -35,32 +39,66 @@ public class TacheController {
     private UserRepository userRepository;
     @GetMapping(path="/index")
     public  String taches(Model model, @RequestParam(name="page",defaultValue = "0")int page
-            , @RequestParam(name="size",defaultValue = "5")int size,
+            , @RequestParam(name="size",defaultValue = "6")int size,
                           @AuthenticationPrincipal UserDetails userDetails,
+                          @RequestParam(name = "startDate", defaultValue = "") String startDate,
+                          @RequestParam(name = "endDate", defaultValue = "") String endDate,
                             @RequestParam(name="keyword",defaultValue = "")String keyword)
     {
         User user = userRepository.findByEmail(userDetails.getUsername());
+        LocalDate parsedStartDate = startDate.isEmpty() ? null : LocalDate.parse(startDate);
+        Date convertedStartDate = parsedStartDate != null
+                ? Date.from(parsedStartDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+                : null;
+        LocalDate parsedEndDate = endDate.isEmpty() ? null : LocalDate.parse(endDate);
+        Date convertedEndDate =parsedEndDate != null
+                ? Date.from(parsedEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+                : null;
         List<Tache> userTaches = user.getTaches(); // Assuming you have a relationship like this
         List<Tache> filteredTaches = new ArrayList<>();
         Role r=new Role("COLLAB");
         Role r1=new Role("ADMIN");
-        if (user.getRoles().contains(r) && !user.getRoles().contains(r1) ) { // Assuming role name is used for identification
-           // Page<Tache> pageTaches = tacheRepository.findByTitreContainsAndUserIn(keyword, userTaches, PageRequest.of(page, size));
-            List<Tache> pageTaches =user.getTaches();
-            filteredTaches.addAll(pageTaches);
-            model.addAttribute("pages", new int[pageTaches.size()]);
-            model.addAttribute("currentPage", page);
-        } else if
-        (user.getRoles().contains(r1)) {
-            Page<Tache> pageTaches = tacheRepository.findByTitreContains(keyword, PageRequest.of(page, size));
+        if (user.getRoles().contains(r) && !user.getRoles().contains(r1)) {
+            System.out.println("********************************************************************************************************");
+            //Page<Tache> pageTaches = tacheRepository.findByUserInOrTitreContainsAndUserInOrDateDebutGreaterThanEqualAndDateFinLessThanEqual(
+                //    userTaches,keyword, userTaches, convertedStartDate, convertedEndDate, PageRequest.of(page, size));
+            Page<Tache> pageTaches =tacheRepository.findByUserIsOrTitreContainsAndUserIsOrDateDebutGreaterThanAndDateFinLessThan(
+                    user, keyword, user, convertedStartDate, convertedEndDate, PageRequest.of(page, size));
+            System.out.println("********************************************************************************************************");
             filteredTaches.addAll(pageTaches.getContent());
             model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
             model.addAttribute("currentPage", page);
+        } else if (user.getRoles().contains(r1)) {
+            if (convertedEndDate==null && convertedStartDate!=null ){
+                Page<Tache> pageTaches = tacheRepository.findByTitreContainsAndDateDebutGreaterThanEqual(
+                        keyword,convertedStartDate, PageRequest.of(page, size));
+                filteredTaches.addAll(pageTaches.getContent());
+                model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
+                model.addAttribute("currentPage", page);
+            } else if (convertedEndDate!=null && convertedStartDate==null) {
+                Page<Tache> pageTaches = tacheRepository.findByTitreContainsAndDateFinLessThanEqual(
+                        keyword,convertedEndDate, PageRequest.of(page, size));
+                filteredTaches.addAll(pageTaches.getContent());
+                model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
+                model.addAttribute("currentPage", page);
+            } else if (convertedEndDate!=null && convertedStartDate!=null) {
+                Page<Tache> pageTaches = tacheRepository.findByTitreContainsAndDateDebutGreaterThanEqualAndDateFinLessThanEqual(
+                        keyword,convertedStartDate,convertedEndDate, PageRequest.of(page, size));
+                filteredTaches.addAll(pageTaches.getContent());
+                model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
+                model.addAttribute("currentPage", page);
+            } else {Page<Tache> pageTaches = tacheRepository.findByTitreContains(
+                    keyword, PageRequest.of(page, size));
+                filteredTaches.addAll(pageTaches.getContent());
+                model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
+
+                model.addAttribute("currentPage", page);}
+
         }
 
         model.addAttribute("listTaches", filteredTaches);
         model.addAttribute("keyword", keyword);
-        return "tache";
+        return "tache1";
     }
 
     @GetMapping("/delete")
@@ -86,6 +124,13 @@ public class TacheController {
         tache.setUser(user);
 
         user.getTaches().add(tache);
+        if (tache.getId()!=null && tache.getTitre()==null){
+            Tache tacheE =   tacheRepository.findByIdIs(tache.getId());
+            tache.setTitre(tacheE.getTitre());
+            tache.setDescription(tacheE.getDescription());
+            tache.setDateDebut(tacheE.getDateDebut());
+            tache.setDateFin(tacheE.getDateFin());
+        }
         tacheRepository.save(tache);
         userRepository.save(user);
 

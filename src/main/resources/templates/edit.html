@@ -12,39 +12,35 @@
   <div class="p-3">
     <form method="post" th:action="@{/save}">
       <div >
-        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-      <div class="mb-3 mt-3">
+
+      <div class="mb-3 mt-3" >
         <label for="id" class="form-label">ID:</label>
         <label th:text="${tache.id}"></label>
         <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${tache.id}">
       </div>
-      <div class="mb-3 mt-3">
+      <div class="mb-3 mt-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
         <label for="titre" class="form-label">Titre:</label>
         <input type="text" class="form-control" id="titre" placeholder="Titre" name="titre" th:value="${tache.titre}">
         <span class="text-danger" th:errors="${tache.titre}"></span>
       </div>
-      <div class="mb-3">
+      <div class="mb-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
         <label for="description" class="form-label"> description:</label>
         <input type="text" class="form-control" id="description" placeholder="description"
                name="description" th:value="${tache.description}">
       </div>
-      <div class="mb-3 mt-3">
+      <div class="mb-3 mt-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
         <label for="dateDebut" class="form-label">dateDebut:</label>
         <input type="Date" class="form-control" id="dateDebut" placeholder="dateDebut"
                name="dateDebut" th:value="${formattedDateDebut}">
         <span class="text-danger" th:errors="${formattedDateDebut}" th:value="${formattedDateDebut}"></span>
       </div>
-      <div class="mb-3 mt-3">
+      <div class="mb-3 mt-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
         <label for="dateFin" class="form-label">dateFin:</label>
         <input type="Date" class="form-control" id="dateFin" placeholder="dateFin"
                name="dateFin" th:value="${formattedDateFin}">
         <span class="text-danger" th:errors="${formattedDateFin}" th:value="${formattedDateFin}"></span>
-      </div></div>
-        <input type="hidden" name="dateDebut" th:value="${formattedDateDebut}">
-        <input type="hidden" name="dateFin" th:value="${formattedDateFin}">
-        <input type="hidden" name="titre" th:value="${tache.titre}">
-        <input type="hidden" name="description" th:value="${tache.description}">
-        <input type="hidden" name="id" th:value="${tache.id}">
+      </div>
+
 
         <div class="form-group">
           <label for="coll">collabs:</label>

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -37,7 +38,8 @@ public class UserController {
             , @RequestParam(name="size",defaultValue = "5")int size,
                           @RequestParam(name="keyword",defaultValue = "")String keyword)
     {
-        Page<User> pageUsers=userRepository.findByEmailContains(keyword, PageRequest.of(page,size));
+        Page<User> pageUsers=userRepository.findByEmailContainsOrNomContainsOrPrenomContains(keyword,keyword,keyword,PageRequest.of(page,size));
+
         model.addAttribute("listCollabs",pageUsers.getContent());
         model.addAttribute("pages",new int[pageUsers.getTotalPages()]);
         model.addAttribute("currentPage",page);
@@ -66,7 +68,15 @@ public class UserController {
         if (bindingResult.hasErrors()) return "formCollab";
 
         userService.addNewUser(collab,confirmPassword);
-        userService.addRoleToUser(collab.getEmail(),roles);
+        if(Arrays.stream(roles).toList().contains("ADMIN")){
+
+            String[] array = {"ADMIN", "COLLAB"};
+            userService.addRoleToUser(collab.getEmail(),array);
+
+        } else  {
+            userService.addRoleToUser(collab.getEmail(),roles);
+        }
+
         return "redirect:/admin/collabs";
     }
     @PostMapping("/admin/EsaveCollab")
