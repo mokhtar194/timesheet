@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template1.html"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Taches</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+</head>
+<body>
+<div layout:fragment="content1">
+  <div class="p-3" style="margin-left: 20rem">
+    <div class="card" style="width: 40rem; height: 95vh;">
+      <div class="card-body">
+        <form method="post" th:action="@{/save}">
+          <div class="mb-3 mt-3">
+            <label for="id" class="form-label">ID:</label>
+            <label th:text="${tache.id}"></label>
+            <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${tache.id}">
+          </div>
+          <div class="mb-3 mt-3">
+            <label for="titre" class="form-label">Titre:</label>
+            <input type="text" class="form-control" id="titre" placeholder="Titre" name="titre" th:value="${tache.titre}">
+            <span class="text-danger" th:errors="${tache.titre}"></span>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description:</label>
+            <input type="text" class="form-control" id="description" placeholder="Description" name="description" th:value="${tache.description}">
+          </div>
+          <div class="mb-3 mt-3">
+            <label for="dateDebut" class="form-label">Date de début:</label>
+            <input type="Date" class="form-control" id="dateDebut" placeholder="Date de début" name="dateDebut" th:value="${formattedDateDebut}">
+            <span class="text-danger" th:errors="${formattedDateDebut}" th:value="${formattedDateDebut}"></span>
+          </div>
+          <div class="mb-3 mt-3">
+            <label for="dateFin" class="form-label">Date de fin:</label>
+            <input type="Date" class="form-control" id="dateFin" placeholder="Date de fin" name="dateFin" th:value="${formattedDateFin}">
+            <span class="text-danger" th:errors="${formattedDateFin}" th:value="${formattedDateFin}"></span>
+          </div>
+          <div class="form-group">
+            <label for="coll">Collabs:</label>
+            <select class="form-control" id="coll" name="coll">
+              <option th:value="${selectedcollab}" th:text="${selectedcollab}" selected></option>
+              <option th:each="p : ${Collabs}" th:value="${p.email}" th:text="${p.email}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"></option>
+            </select>
+          </div>
+          <br>
+
+          <div class="form-check form-check-inline mb-3" >
+
+            <label class="form-check-label">
+
+              <input class="form-check-input" type="radio" name="etatAvancement" th:value="${etat}" checked><p th:text="${etat}"/>
+
+            </label>
+
+
+          <div class="form-check form-check-inline mb-3" th:each="p:${TachEtat}" >
+
+            <label class="form-check-label">
+
+              <input class="form-check-input" type="radio" name="etatAvancement" th:value="${p}" ><p th:text="${p}"/>
+
+            </label>
+          </div>
+            <div class="mb-3">
+              <label for="heureTravaillees" class="form-label"> heureTravaillees:</label>
+              <input type="number" class="form-control" id="heureTravaillees" placeholder="heureTravaillees"
+                     name="heureTravaillees" th:value="${tache.heureTravaillees}">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

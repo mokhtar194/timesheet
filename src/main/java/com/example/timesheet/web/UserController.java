@@ -1,11 +1,8 @@
 package com.example.timesheet.web;
 
 import com.example.timesheet.entities.Role;
-import com.example.timesheet.entities.Tache;
 import com.example.timesheet.entities.User;
-import com.example.timesheet.enums.Etats;
 import com.example.timesheet.repositories.RoleRepository;
-import com.example.timesheet.repositories.TacheRepository;
 import com.example.timesheet.repositories.UserRepository;
 import com.example.timesheet.service.UserServiceImpl;
 import jakarta.validation.Valid;

@@ -12,7 +12,6 @@
   <div class="p-3">
     <form method="post" th:action="@{/save}">
       <div class="mb-3 mt-3">
-        <label for="id" class="form-label">ID:</label>
         <label th:text="${tache.id}"></label>
         <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${tache.id}">
       </div>

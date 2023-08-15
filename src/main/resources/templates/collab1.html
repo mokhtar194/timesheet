@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template1">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
+</head>
+<body>
+<div layout:fragment="content1">
+
+
+  <div class=" container-fluid d-flex justify-content-center align-items-center ">
+    <div class="card" >
+      <div class="card-header" >
+        <form class="form-inline d-flex " th:method="get" th:action="@{/admin/collabs}">
+
+          <input class="form-control mr-2" style="width: 300px" name="keyword" type="search" placeholder="Keyword" aria-label="Search" th:value="${keyword}">
+          <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i>Search</button>
+
+        </form>
+      </div>
+      <div class="card-body" style="width:100vh">
+
+        <table class="table" >
+          <thead>
+          <th>ID</th>
+          <th>NOM</th>
+          <th>PRENOM</th>
+          <th>EMAIL</th>
+          <th>NB_TACHE</th>
+          <th>TACHES</th>
+
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="p:${listCollabs}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.nom}"></td>
+            <td th:text="${p.prenom}"></td>
+            <td th:text="${p.email}"></td>
+            <td th:text="${p.getTaches().size()}"></td>
+            <td > <select class="form-control mr-2"  >
+              <option value=""> Details</option>
+
+              <div th:each="t:${p.getTaches()}">
+                <option th:text="${t.titre}"></option>
+
+              </div>
+
+
+            </select> </td>
+
+            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+              <a onclick="return confirm('are you sure?')" class="btn btn-danger" th:href="@{/admin/deleteCollab(id=${p.id},keyword=${keyword},page=${currentPage})}">
+                <i class="bi bi-trash"></i>
+                Delete
+              </a>
+            </td>
+
+            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+              <a  class="btn btn-danger"
+                  th:href="@{/admin/editCollab(id=${p.id})}">
+                <i class="bi bi-pencil"></i>
+                Modify
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ul class="nav nav-pills">
+          <li th:each="page,status:${pages}">
+            <a th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+               th:text="${status.index}"
+               th:href="@{/admin/collabs(page=${status.index},keyword=${keyword})}"
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
