@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template1.html"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Collaborateur</title>
+</head>
+<body>
+<div layout:fragment="content1">
+  <div class="container " style="margin-left: 20rem">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card" style="width: 40rem; height: 100vh;">
+          <div class="card-body">
+    <form method="post" th:action="@{/admin/saveCollab}">
+      <div class="mb-3 mt-3">
+        <label for="id" class="form-label">ID:</label>
+        <label th:text="${collab.id}"></label>
+        <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${collab.id}">
+      </div>
+      <div class="mb-3 mt-3">
+        <label for="nom" class="form-label">Nom:</label>
+        <input type="text" class="form-control" id="nom" placeholder="nom" name="nom" th:value="${collab.nom}">
+        <span class="text-danger" th:errors="${collab.nom}"></span>
+      </div>
+      <div class="mb-3">
+          <label for="prenom" class="form-label"> prenom:</label>
+        <input type="text" class="form-control" id="prenom" placeholder="prenom"
+               name="prenom" th:value="${collab.prenom}">
+      </div>
+      <div class="mb-3 mt-3">
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" class="form-control" id="email" placeholder="Email"
+               name="email" th:value="${collab.email}">
+        <span class="text-danger" th:errors="${collab.email}" th:value="${collab.email}"></span>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label"> password:</label>
+        <input type="password" class="form-control" id="password" placeholder="password"
+               name="password" th:value="${collab.password}">
+      </div>
+      <div class="mb-3">
+        <label for="confirmpassword" class="form-label"> confirmpassword:</label>
+        <input type="password" class="form-control" id="confirmpassword" placeholder="confirmpassword"
+               name="confirmpassword">
+      </div>
+
+      <div class="form-check form-switch" th:each="p:${Roles}">
+        <input class="form-check-input" type="checkbox" th:id="'flexSwitchCheck' + ${p.getRole()}" th:name="roles" th:value="${p.getRole()}">
+        <label class="form-check-label" th:for="'flexSwitchCheck' + ${p.getRole()}" th:text="${p.getRole()}"></label>
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

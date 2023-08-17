@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Page<User> findByEmailContainsOrNomContainsOrPrenomContains(String kw,String nom, String prenom,  Pageable pageable);
    // Page<User> findByEmailAndNomAndPrenomContains(String kw,String nom, String prenom ,Pageable pageable);
     User findByEmail(String email);
+    User findByIdIs(Long id);
     void deleteByEmail(String email);
 
 }

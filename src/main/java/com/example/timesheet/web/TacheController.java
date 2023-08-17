@@ -7,7 +7,9 @@ import com.example.timesheet.entities.User;
 import com.example.timesheet.enums.Etats;
 import com.example.timesheet.repositories.TacheRepository;
 import com.example.timesheet.repositories.UserRepository;
+import com.example.timesheet.service.ExcelService;
 import com.example.timesheet.service.UserServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -37,9 +43,10 @@ import java.util.List;
 public class TacheController {
     private TacheRepository tacheRepository;
     private UserRepository userRepository;
+    private ExcelService excelService;
     @GetMapping(path="/index")
     public  String taches(Model model, @RequestParam(name="page",defaultValue = "0")int page
-            , @RequestParam(name="size",defaultValue = "9")int size,
+            , @RequestParam(name="size",defaultValue = "7")int size,
                           @AuthenticationPrincipal UserDetails userDetails,
                           @RequestParam(name = "startDate", defaultValue = "") String startDate,
                           @RequestParam(name = "endDate", defaultValue = "") String endDate,
@@ -183,5 +190,24 @@ public class TacheController {
     public List<Tache> listTaches(){
         return tacheRepository.findAll();
     }
+    @GetMapping("/exportTache")
+    public void exportTachesToExcel(HttpServletResponse response) throws IOException {
+        List<Tache> taches = tacheRepository.findAll();
 
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=taches.xlsx");
+
+        OutputStream outputStream = response.getOutputStream();
+        excelService.exportTacheToExcel(taches, outputStream);
+        outputStream.close();
+    }
+
+    @PostMapping("/importTache")
+    public String importTachesFromExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        excelService.importTacheFromExcel(inputStream,userRepository,tacheRepository);
+        inputStream.close();
+
+        return "redirect:/index";
+    }
 }

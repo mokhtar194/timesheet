@@ -62,7 +62,7 @@
 
             <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
               <a  class="btn btn-danger"
-                  th:href="@{/admin/editCollab(id=${p.id})}">
+                  th:href="@{/admin/editCollab(id=${p.id},keyword=${keyword},page=${currentPage})}">
                 <i class="bi bi-pencil"></i>
                 Modify
               </a>

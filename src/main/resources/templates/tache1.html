@@ -2,7 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{template1}">
+      layout:decorate="~{template2}">
 <head>
     <meta charset="UTF-8" >
     <title>TimeSheet</title>
@@ -14,10 +14,12 @@
 <div layout:fragment="content1">
 
 
-  <div class="container mt-2">
+  <div class="container mt-2" style="margin-left: 29vh">
     <div class="card" style="width:available">
       <div class="card-header" style="width:available">
         <form class="form-inline d-flex justify-content-between" th:method="get" th:action="@{/index}">
+          <a class="btn btn-primary" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/form}"><i class="bi bi-plus-square"></i>
+          </a>
 
 
           <div class="d-flex align-items-center">
@@ -44,15 +46,8 @@
 
               </div>
 
-
             </select>
           </div>
-
-
-
-
-
-
           <input class="form-control mr-2" style="width: 300px" name="keyword" type="search" placeholder="Keyword" aria-label="Search" th:value="${keyword}">
           <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i>Search</button>
 

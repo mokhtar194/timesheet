@@ -2,7 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{template1}">
+      layout:decorate="~{template2}">
 <head>
     <meta charset="UTF-8" >
     <title>TimeSheet</title>
@@ -14,10 +14,12 @@
 <div layout:fragment="content1">
 
 
-  <div class="container col-sm-12 col-md-12">
+  <div class="container " style="margin-left: 29vh;width: 180vh">
     <div class="card col-md-12 mb-12" >
       <div class="card-header" style="width:available">
         <form class="form-inline d-flex " th:method="get" th:action="@{/admin/collabs}">
+          <a class="btn btn-primary" style="margin-right: 50px" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/formCollab}"><i class="bi bi-plus-square"></i>
+          </a>
 
           <input class="form-control mr-2" style="width: 300px" name="keyword" type="search" placeholder="Keyword" aria-label="Search" th:value="${keyword}">
           <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i>Search</button>
@@ -29,7 +31,7 @@
         <div class="row">
           <div th:each="p:${listCollabs}" class="col-md-4 mb-4">
 
-            <div class="card">
+            <div class="card" style="width: 50vh">
               <div class="card-header"></div>
 
               <div class="card-body">
@@ -61,7 +63,7 @@
 
 
                   <a  class="btn btn-outline-secondary" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
-                      th:href="@{/admin/editCollab(id=${p.id})}">
+                      th:href="@{/admin/editCollab(id=${p.id},keyword=${keyword},page=${currentPage})}">
                     <i class="bi bi-pencil"></i>
                     Modify
                   </a>

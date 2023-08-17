@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.3/font/bootstrap-icons.css">
   <script src="/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 
+  <link rel="icon" type="image/x-icon" href="https://cdn3d.iconscout.com/3d/premium/thumb/clipboard-6356601-5231805.png" />
 </head>
 <body>
 <!-- Grey with black text -->
@@ -20,21 +21,43 @@
     <hr style="color: white">
     <div class="list-group list-group-flush" >
 
-      <a href="@{/index}" class="list-group-item list-group-item-action bg-dark text-white "><i class="bi bi-house-door"></i> Home</a>
+      <a th:href="@{/index}" class="list-group-item list-group-item-action bg-dark text-white "><i class="bi bi-house-door"></i> Home</a>
+
+        <a th:href="@{/index}" class="list-group-item list-group-item-action bg-dark text-white " ><i class="bi bi-list-task"></i> Taches </a>
+
+
+        <a th:href="@{/admin/collabs}" class="list-group-item list-group-item-action bg-dark text-white " ><i class="bi bi-people"></i> Collabs</a>
+
       <div class="dropdown">
-        <a href="#" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-list-task"></i> Taches</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/form}">Nouveau</a>
-          <a class="dropdown-item" th:href="@{/index}">Chercher</a>
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-download"></i> Import</a>
+        <div class="dropdown-menu bg-dark text-white">
+          <a class="dropdown-item bg-dark text-white" >
+            <form th:action="@{/importTache}" method="post" enctype="multipart/form-data">
+              <input type="file" name="file"  accept=".xlsx">
+              <button type="submit" class="btn btn-outline-light btn-sm">Tache</button>
+            </form>
+          </a>
+          <a class="dropdown-item bg-dark text-white" >
+          <form th:action="@{/admin/importCollab}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".xlsx">
+            <button type="submit" class="btn btn-outline-light btn-sm">collab</button>
+          </form>
+          </a>
         </div>
       </div>
       <div class="dropdown">
-        <a href="#" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-people"></i> Collabs</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" th:href="@{/admin/formCollab}">Nouveau</a>
-          <a class="dropdown-item" th:href="@{/admin/collabs}">Chercher</a>
+          <a href="#" class="list-group-item list-group-item-action bg-dark text-white dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-upload"></i> Export</a>
+          <div class="dropdown-menu">
+
+            <a class="dropdown-item" th:href="@{/exportTache}">exportTache</a>
+            <a class="dropdown-item" th:href="@{/admin/exportCollab}">exportCollab</a>
+
+
+
         </div>
       </div>
+
+
       <div style="position: absolute; bottom: 10px; ">
       <hr style="color: white">
 
