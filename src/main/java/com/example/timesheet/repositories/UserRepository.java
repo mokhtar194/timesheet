@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<User,Long> {
     Page<User> findByNomContains(String kw, Pageable pageable);
     Page<User> findByPrenomContains(String kw, Pageable pageable);
@@ -15,6 +17,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
    // Page<User> findByEmailAndNomAndPrenomContains(String kw,String nom, String prenom ,Pageable pageable);
     User findByEmail(String email);
     User findByIdIs(Long id);
+    List<User> findAll();
     void deleteByEmail(String email);
 
 }

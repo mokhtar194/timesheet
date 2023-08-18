@@ -3,7 +3,10 @@ package com.example.timesheet.web;
 import com.example.timesheet.entities.Role;
 import com.example.timesheet.entities.Tache;
 import com.example.timesheet.entities.User;
+import com.example.timesheet.entities.UserTaskSummaryDTO;
+import com.example.timesheet.enums.Etats;
 import com.example.timesheet.repositories.RoleRepository;
+import com.example.timesheet.repositories.TacheRepository;
 import com.example.timesheet.repositories.UserRepository;
 import com.example.timesheet.service.ExcelService;
 import com.example.timesheet.service.UserServiceImpl;
@@ -34,6 +37,7 @@ import java.util.List;
 public class UserController {
 
     private UserRepository userRepository;
+    private TacheRepository tacheRepository;
     private UserServiceImpl userService;
     private ExcelService excelService;
     private PasswordEncoder passwordEncoder;
@@ -58,6 +62,64 @@ public class UserController {
             , @RequestParam(name="size",defaultValue = "5")int size,
                          @RequestParam(name="keyword",defaultValue = "")String keyword)
     {
+        List<User> listCollabs = userRepository.findAll();
+        List<UserTaskSummaryDTO> summaries = new ArrayList<>();
+
+
+        for (User user : listCollabs) {
+            UserTaskSummaryDTO summary = new UserTaskSummaryDTO();
+            summary.setEmail(user.getEmail());
+            Long a=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.NON_COMMENCE).count();
+            Long r=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_ATTENTE).count();
+            Long z=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_COURS).count();
+            Long b=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.TERMINE).count();
+            System.out.print("a= "+a);
+            System.out.print("  ");
+            System.out.print("r= "+r);
+            System.out.print("  ");
+            System.out.print("z= "+z);
+            System.out.print("  ");
+            System.out.println("b= "+b);
+            System.out.println("*********************************");
+            if((r+a+z+b)==0 ){
+                System.out.println("equal0");
+                summary.setNonCommenceCount(0);
+                summary.setEnAttenteCount(0);
+                summary.setEnCoursCount(0);
+                summary.setTermineCount(0);
+
+            }else{
+                long aresult=(a*100)/(r+a+b+z);
+                summary.setNonCommenceCount((int)aresult);
+                System.out.println("aresult = "+aresult);
+                long rressult=(r*100/(r+a+z+b));
+                summary.setEnAttenteCount((int)rressult);
+                System.out.println("rressult = "+rressult);
+                long zresult=(z*100)/(r+a+z+b);
+                summary.setEnCoursCount((int)zresult);
+                System.out.println("zresult = "+zresult);
+                long bresult=(b*100)/(r+a+z+b);
+                summary.setTermineCount((int)bresult);
+                System.out.println("bresult = "+bresult);
+            }
+            System.out.println("*********************************");
+            System.out.println(summary.getNonCommenceCount());
+            System.out.println("*********************************");
+            System.out.println(summary.getEnAttenteCount());
+            System.out.println("*********************************");
+            System.out.println(summary.getEnCoursCount());
+            System.out.println("*********************************");
+            System.out.println(summary.getTermineCount());
+
+
+            summaries.add(summary);
+
+
+        }
+        List<Tache> listtache=tacheRepository.findAll();
+        model.addAttribute("summaries",summaries);
+        model.addAttribute("summariesCount",summaries.size());
+        model.addAttribute("listtache",listtache.size());
 
         return "home1";
     }

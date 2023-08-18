@@ -76,6 +76,9 @@ public class TacheController {
             filteredTaches.addAll(pageTaches.getContent());
             model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
             model.addAttribute("currentPage", page);
+            model.addAttribute("startDate", convertedStartDate);
+            model.addAttribute("endDate", convertedEndDate);
+            model.addAttribute("collabselect", collabselect);
         } else if (user.getRoles().contains(r1)) {
             if (convertedEndDate==null && convertedStartDate!=null ){
                 Page<Tache> pageTaches = tacheRepository.findByTitreContainsAndDateDebutGreaterThanEqualAndUserEmailContains(
@@ -83,12 +86,18 @@ public class TacheController {
                 filteredTaches.addAll(pageTaches.getContent());
                 model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
                 model.addAttribute("currentPage", page);
+                model.addAttribute("startDate", convertedStartDate);
+                model.addAttribute("endDate", convertedEndDate);
+                model.addAttribute("collabselect", collabselect);
             } else if (convertedEndDate!=null && convertedStartDate==null) {
                 Page<Tache> pageTaches = tacheRepository.findByTitreContainsAndDateFinLessThanEqualAndUserEmailContains(
                         keyword,convertedEndDate,collabselect, PageRequest.of(page, size));
                 filteredTaches.addAll(pageTaches.getContent());
+
                 model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
-                model.addAttribute("currentPage", page);
+                model.addAttribute("currentPage", page);model.addAttribute("startDate", convertedStartDate);
+                model.addAttribute("endDate", convertedEndDate);
+                model.addAttribute("collabselect", collabselect);
             } else if (convertedEndDate!=null && convertedStartDate!=null) {
                 Page<Tache> pageTaches = tacheRepository.findByTitreContainsAndDateDebutGreaterThanEqualAndDateFinLessThanEqualAndUserEmailContains(
                         keyword,convertedStartDate,convertedEndDate,collabselect, PageRequest.of(page, size));
@@ -100,7 +109,11 @@ public class TacheController {
                 filteredTaches.addAll(pageTaches.getContent());
                 model.addAttribute("pages", new int[pageTaches.getTotalPages()]);
 
-                model.addAttribute("currentPage", page);}
+                model.addAttribute("currentPage", page);
+                model.addAttribute("startDate", convertedStartDate);
+                model.addAttribute("endDate", convertedEndDate);
+                model.addAttribute("collabselect", collabselect);
+            }
 
         }
         List<User> listusers = userRepository.findAll();
@@ -109,6 +122,9 @@ public class TacheController {
         model.addAttribute("listTaches", filteredTaches);
         model.addAttribute("listEmail", listusers);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("startDate", convertedStartDate);
+        model.addAttribute("endDate", convertedEndDate);
+        model.addAttribute("collabselect", collabselect);
         return "tache1";
     }
 
@@ -132,7 +148,11 @@ public class TacheController {
     }
     @PostMapping("/save")
 
-    public String save(@Valid Tache tache, BindingResult bindingResult,@RequestParam("coll") String coll){
+    public String save(@Valid Tache tache, BindingResult bindingResult,@RequestParam("coll") String coll,
+                       @RequestParam(name = "startDate", defaultValue = "") String startDate,
+                       @RequestParam(name = "endDate", defaultValue = "") String endDate,
+                       @RequestParam(name = "collabselect", defaultValue = "") String collabselect,
+                       @RequestParam(name="keyword",defaultValue = "")String keyword,@RequestParam(name="page",defaultValue = "0")int page){
         if (bindingResult.hasErrors()) return "form";
         User user=userRepository.findByEmail(coll);
 
@@ -149,12 +169,12 @@ public class TacheController {
         tacheRepository.save(tache);
         userRepository.save(user);
 
-        return "redirect:/index";
+        return "redirect:/index?page="+page+"&keyword="+keyword+"&startDate="+startDate+"&endDate="+endDate+"&collabselect="+collabselect;
     }
 
     @GetMapping("/edit")
 
-    public String edit(@RequestParam(name = "id") Long id, Model model){
+    public String edit(@RequestParam(name = "id") Long id, Model model,String keyword,int page,String startDate,String endDate,String collabselect){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Tache tache=tacheRepository.findById(id).get();
         model.addAttribute("tache",tache);
@@ -177,6 +197,11 @@ public class TacheController {
         model.addAttribute("TachEtat",etats1);
         model.addAttribute("formattedDateDebut", dateFormat.format(tache.getDateDebut()));
         model.addAttribute("formattedDateFin", dateFormat.format(tache.getDateFin()));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("page", page);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("collabselect", collabselect);
 
         return "edit1";
     }

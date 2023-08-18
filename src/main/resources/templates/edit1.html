@@ -69,6 +69,11 @@
               <input type="number" class="form-control" id="heureTravaillees" placeholder="heureTravaillees"
                      name="heureTravaillees" th:value="${tache.heureTravaillees}">
             </div>
+            <input type="hidden" name="keyword" th:value="${keyword}">
+            <input type="hidden" name="page" th:value="${page}">
+            <input type="hidden" name="startDate" th:value="${startDate}">
+            <input type="hidden" name="endDate" th:value="${endDate}">
+            <input type="hidden" name="collabselect" th:value="${collabselect}">
             <button type="submit" class="btn btn-primary">Save</button>
           </div>
 
