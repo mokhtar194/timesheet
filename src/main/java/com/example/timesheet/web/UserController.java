@@ -28,25 +28,27 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @AllArgsConstructor
 public class UserController {
 
     private UserRepository userRepository;
+
     private TacheRepository tacheRepository;
     private UserServiceImpl userService;
     private ExcelService excelService;
     private PasswordEncoder passwordEncoder;
 
-
+    static int EA=0;
+    static int EC=0;
+    static int NC=0;
+    static int T=0;
     private RoleRepository roleRepository;
     @GetMapping(path="/admin/collabs")
     public  String users(Model model, @RequestParam(name="page",defaultValue = "0")int page
-            , @RequestParam(name="size",defaultValue = "5")int size,
+            , @RequestParam(name="size",defaultValue = "9")int size,
                           @RequestParam(name="keyword",defaultValue = "")String keyword)
     {
         Page<User> pageUsers=userRepository.findByEmailContainsOrNomContainsOrPrenomContains(keyword,keyword,keyword,PageRequest.of(page,size));
@@ -67,62 +69,52 @@ public class UserController {
 
 
         for (User user : listCollabs) {
+            if (user.getTaches().size()>0) {
+
+
             UserTaskSummaryDTO summary = new UserTaskSummaryDTO();
             summary.setEmail(user.getEmail());
-            Long a=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.NON_COMMENCE).count();
-            Long r=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_ATTENTE).count();
-            Long z=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_COURS).count();
-            Long b=user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.TERMINE).count();
-            System.out.print("a= "+a);
-            System.out.print("  ");
-            System.out.print("r= "+r);
-            System.out.print("  ");
-            System.out.print("z= "+z);
-            System.out.print("  ");
-            System.out.println("b= "+b);
-            System.out.println("*********************************");
-            if((r+a+z+b)==0 ){
-                System.out.println("equal0");
+            Long a = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.NON_COMMENCE).count();
+            Long r = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_ATTENTE).count();
+            Long z = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_COURS).count();
+            Long b = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.TERMINE).count();
+
+            if ((r + a + z + b) == 0) {
+
                 summary.setNonCommenceCount(0);
                 summary.setEnAttenteCount(0);
                 summary.setEnCoursCount(0);
                 summary.setTermineCount(0);
 
-            }else{
-                long aresult=(a*100)/(r+a+b+z);
-                summary.setNonCommenceCount((int)aresult);
-                System.out.println("aresult = "+aresult);
-                long rressult=(r*100/(r+a+z+b));
-                summary.setEnAttenteCount((int)rressult);
-                System.out.println("rressult = "+rressult);
-                long zresult=(z*100)/(r+a+z+b);
-                summary.setEnCoursCount((int)zresult);
-                System.out.println("zresult = "+zresult);
-                long bresult=(b*100)/(r+a+z+b);
-                summary.setTermineCount((int)bresult);
-                System.out.println("bresult = "+bresult);
+            } else {
+                long aresult = (a * 100) / (r + a + b + z);
+                summary.setNonCommenceCount((int) aresult);
+                long rressult = (r * 100 / (r + a + z + b));
+                summary.setEnAttenteCount((int) rressult);
+                long zresult = (z * 100) / (r + a + z + b);
+                summary.setEnCoursCount((int) zresult);
+                long bresult = (b * 100) / (r + a + z + b);
+                summary.setTermineCount((int) bresult);
             }
-            System.out.println("*********************************");
-            System.out.println(summary.getNonCommenceCount());
-            System.out.println("*********************************");
-            System.out.println(summary.getEnAttenteCount());
-            System.out.println("*********************************");
-            System.out.println(summary.getEnCoursCount());
-            System.out.println("*********************************");
-            System.out.println(summary.getTermineCount());
+
+
 
 
             summaries.add(summary);
 
-
+        }
         }
         List<Tache> listtache=tacheRepository.findAll();
         model.addAttribute("summaries",summaries);
         model.addAttribute("summariesCount",summaries.size());
         model.addAttribute("listtache",listtache.size());
+        model.addAttribute("chartData",UserHeurTravaill()) ;
 
-        return "home1";
+        model.addAttribute("chartData1", graphData());
+
+        return "home3";
     }
+
 
     @GetMapping("/admin/deleteCollab")
 
@@ -142,6 +134,7 @@ public class UserController {
 
         return "formCollab1";
     }
+
     @PostMapping("/admin/saveCollab")
 
     public String save(@Valid User collab, BindingResult bindingResult,@RequestParam("confirmpassword") String confirmPassword, @RequestParam("roles") String[] roles){
@@ -176,6 +169,8 @@ public class UserController {
                 collab.setPassword(passwordEncoder.encode(password));
             }
         }
+        User userdb = userRepository.findByIdIs(collab.getId());
+        collab.setTaches(userdb.getTaches());
 
 
         userService.addRoleToUser(collab.getEmail(),roles);
@@ -222,4 +217,58 @@ public class UserController {
 
         return "redirect:/admin/collabs";
     }
+
+    private Map<String,Integer> graphData( ) {
+        List<Tache> taches=tacheRepository.findAll();
+        Map<String, Integer> Etatmap = new TreeMap<>();
+
+        for (Tache t: taches)
+        {
+            if(t.getEtatAvancement().name().equals("EN_ATTENTE"))
+            {
+                EA++;
+                System.out.println(EA);
+            }
+            else if(t.getEtatAvancement().name().equals("EN_COURS"))
+            {
+                EC++;
+                System.out.println(EC);
+            }
+            else if(t.getEtatAvancement().name().equals("NON_COMMENCE"))
+            {
+                NC++;
+                System.out.println(NC);
+            }
+            else if(t.getEtatAvancement().name().equals("TERMINE"))
+            {
+                T++;
+                System.out.println(T);
+            }}
+        Etatmap.put("EN_ATTENTE",EA);
+        Etatmap.put("EN_COURS",EC);
+        Etatmap.put("NON_COMMENCE",NC);
+        Etatmap.put("TERMINE",T);
+
+        return Etatmap ;
+    }
+private Map<String, Integer> UserHeurTravaill()
+{
+    List<User> listusers = userRepository.findByTachesIsNotNull();
+    Map<String, Integer> usermap = new TreeMap<>();
+
+    for (User user:listusers)
+    {
+        int cpt=0;
+        for (Tache tache:user.getTaches())
+        {
+            cpt=cpt+tache.getHeureTravaillees();
+
+        }
+
+        usermap.put(user.getNom()+" "+user.getPrenom(),cpt);
+    }
+
+    return usermap;
+}
+
 }

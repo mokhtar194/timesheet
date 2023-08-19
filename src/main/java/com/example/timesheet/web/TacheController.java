@@ -46,7 +46,7 @@ public class TacheController {
     private ExcelService excelService;
     @GetMapping(path="/index")
     public  String taches(Model model, @RequestParam(name="page",defaultValue = "0")int page
-            , @RequestParam(name="size",defaultValue = "7")int size,
+            , @RequestParam(name="size",defaultValue = "9")int size,
                           @AuthenticationPrincipal UserDetails userDetails,
                           @RequestParam(name = "startDate", defaultValue = "") String startDate,
                           @RequestParam(name = "endDate", defaultValue = "") String endDate,
@@ -152,7 +152,8 @@ public class TacheController {
                        @RequestParam(name = "startDate", defaultValue = "") String startDate,
                        @RequestParam(name = "endDate", defaultValue = "") String endDate,
                        @RequestParam(name = "collabselect", defaultValue = "") String collabselect,
-                       @RequestParam(name="keyword",defaultValue = "")String keyword,@RequestParam(name="page",defaultValue = "0")int page){
+                       @RequestParam(name="keyword",defaultValue = "")String keyword,@RequestParam(name="page",defaultValue = "0")int page,
+                       @RequestParam(name="fromcollab",required = false)boolean fromcollab){
         if (bindingResult.hasErrors()) return "form";
         User user=userRepository.findByEmail(coll);
 
@@ -168,13 +169,18 @@ public class TacheController {
         }
         tacheRepository.save(tache);
         userRepository.save(user);
+        if(fromcollab==true){
+            return "redirect:/admin/collabs?page="+page+"&keyword="+keyword;
+        }else{
+            return "redirect:/index?page="+page+"&keyword="+keyword+"&startDate="+startDate+"&endDate="+endDate+"&collabselect="+collabselect;
 
-        return "redirect:/index?page="+page+"&keyword="+keyword+"&startDate="+startDate+"&endDate="+endDate+"&collabselect="+collabselect;
+        }
+
     }
 
     @GetMapping("/edit")
 
-    public String edit(@RequestParam(name = "id") Long id, Model model,String keyword,int page,String startDate,String endDate,String collabselect){
+    public String edit(@RequestParam(name = "id") Long id, Model model,String keyword,int page,String startDate,String endDate,String collabselect,boolean fromcollab){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Tache tache=tacheRepository.findById(id).get();
         model.addAttribute("tache",tache);
@@ -202,6 +208,7 @@ public class TacheController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("collabselect", collabselect);
+        model.addAttribute("fromcollab", fromcollab);
 
         return "edit1";
     }

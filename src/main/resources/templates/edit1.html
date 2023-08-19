@@ -12,7 +12,7 @@
 <div layout:fragment="content1">
   <div class="p-3" style="margin-left: 20rem">
     <div class="card" style="width: 40rem; height: 95vh;">
-      <div class="card-body">
+      <div class="card-body" style="overflow: scroll">
         <form method="post" th:action="@{/save}">
           <div class="mb-3 mt-3">
             <label for="id" class="form-label">ID:</label>
@@ -26,7 +26,7 @@
           </div>
           <div class="mb-3">
             <label for="description" class="form-label">Description:</label>
-            <input type="text" class="form-control" id="description" placeholder="Description" name="description" th:value="${tache.description}">
+            <textarea type="text" class="form-control" id="description" placeholder="Description" name="description" th:text="${tache.description}"></textarea>
           </div>
           <div class="mb-3 mt-3">
             <label for="dateDebut" class="form-label">Date de début:</label>
@@ -74,6 +74,7 @@
             <input type="hidden" name="startDate" th:value="${startDate}">
             <input type="hidden" name="endDate" th:value="${endDate}">
             <input type="hidden" name="collabselect" th:value="${collabselect}">
+            <input type="hidden" name="fromcollab" th:value="${fromcollab}">
             <button type="submit" class="btn btn-primary">Save</button>
           </div>
 

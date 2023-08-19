@@ -25,7 +25,7 @@ public class Tache {
     )
     private String titre;
     @Column(
-            length = 300
+            length = 10000
     )
     private String description;
     @ManyToOne

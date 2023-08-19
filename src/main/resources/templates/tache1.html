@@ -80,13 +80,16 @@
 
                 </div>
                 <h5 class="card-title" th:text="${p.titre}"></h5>
-                <p class="card-text" th:text="${p.description}"></p>
+                <h10 class="card-text" th:text="${p.dateDebut} +' '+'/'+' '+ ${p.dateFin}"></h10>
                 <p class="card-text" th:text="${p.getUser().email}"></p>
-                <p class="card-text" th:text="${p.dateDebut} +' '+'/'+' '+ ${p.dateFin}"></p>
-
-
-
                 <p class="card-text" th:text="${p.heureTravaillees}"></p>
+                <p class="card-text" style="overflow: auto;height:10vh; " th:text="${p.description}"></p>
+
+
+
+
+
+
 
                   <div class="progress" th:if="${p.etatAvancement.name() == 'EN_ATTENTE'}">
 

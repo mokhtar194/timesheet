@@ -44,7 +44,7 @@
                     <a href="#" class="list-group-item list-group-item-action  dropdown-toggle" data-bs-toggle="dropdown"  th:text="${p.getTaches().size()}+' '+'Taches'"> </a>
                     <div class="dropdown-menu">
                       <div th:each="t:${p.getTaches()}">
-                        <a class="dropdown-item" th:text="${t.titre}" th:href="@{/edit(id=${t.id})}"></a>
+                        <a class="dropdown-item" th:text="${t.titre}" th:href="@{/edit(id=${t.id},keyword=${keyword},page=${currentPage},startDate='',endDate='',collabselect=${p.email},fromcollab=true)}"></a>
                       </div>
 
                     </div>
