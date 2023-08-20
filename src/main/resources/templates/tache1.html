@@ -15,7 +15,7 @@
 
 
   <div class="container mt-2" style="margin-left: 29vh">
-    <div class="card" style="width:available">
+    <div class="card" style="width:175vh">
       <div class="card-header" style="width:available">
         <form class="form-inline d-flex justify-content-between" th:method="get" th:action="@{/index}">
           <a class="btn btn-primary" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/form}"><i class="bi bi-plus-square"></i>
@@ -37,7 +37,7 @@
             <input type="date" name="endDate" class="form-control ml-2" th:value="${endDate}">
           </div>
           </div>
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <select class="form-control mr-2" name="collabselect" >
               <option value="">select user</option>
 

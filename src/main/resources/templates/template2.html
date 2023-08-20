@@ -18,10 +18,10 @@
   <nav class="nav flex-column bg-dark border-right fixed-top" style="width: 30vh; height: 100vh" id="sidebar-wrapper">
     <a class="nav-link text-white fs-4" style="margin-top: 5px" href="#"><i class="bi bi-clipboard2-check-fill"></i> TimeSheet</a>
     <hr style="color: white">
-    <a th:href="@{/admin/home}" class="nav-link text-white" href="#"><i class="bi bi-house-door"></i> Home</a>
+    <a th:href="@{/admin/home}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-link text-white" href="#"><i class="bi bi-house-door"></i> Home</a>
     <a th:href="@{/index}" class="nav-link text-white" href="#"><i class="bi bi-list-task"></i> Taches</a>
-    <a th:href="@{/admin/collabs}" class="nav-link text-white" href="#"><i class="bi bi-people"></i> Collabs</a>
-    <div class="dropdown">
+    <a th:href="@{/admin/collabs}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-link text-white" href="#"><i class="bi bi-people"></i> Collabs</a>
+    <div class="dropdown" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
       <a href="#" class="nav-link text-white dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-download"></i> Import</a>
       <div class="dropdown-menu bg-dark text-white">
         <a class="dropdown-item bg-dark text-white">
@@ -38,11 +38,11 @@
         </a>
       </div>
     </div>
-    <div class="dropdown">
+    <div class="dropdown" >
       <a href="#" class="nav-link text-white dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-upload"></i> Export</a>
       <div class="dropdown-menu">
         <a class="dropdown-item" th:href="@{/exportTache}">exportTache</a>
-        <a class="dropdown-item" th:href="@{/admin/exportCollab}">exportCollab</a>
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="dropdown-item" th:href="@{/admin/exportCollab}">exportCollab</a>
       </div>
     </div>
     <div style="position: absolute; bottom: 10px;">
@@ -61,7 +61,7 @@
       </div>
     </div>
   </nav>
-<div layout:fragment="content1" >
+<div layout:fragment="content1"  >
 
 </div>
 </div>
