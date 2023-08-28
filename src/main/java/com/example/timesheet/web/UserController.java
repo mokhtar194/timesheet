@@ -60,60 +60,89 @@ public class UserController {
         model.addAttribute("keyword",keyword);
         return "collab";
     }
-    @GetMapping(path="/admin/home")
-    public  String home(Model model, @RequestParam(name="page",defaultValue = "0")int page
-            , @RequestParam(name="size",defaultValue = "5")int size,
-                         @RequestParam(name="keyword",defaultValue = "")String keyword)
+    @GetMapping(path="/home")
+    public  String home(Model model,@RequestParam(name = "name", defaultValue = "") String name)
     {
+
         List<User> listCollabs = userRepository.findAll();
-        List<UserTaskSummaryDTO> summaries = new ArrayList<>();
+        User userad=userRepository.findByEmail(name);
+        boolean ad=false;
 
-
-        for (User user : listCollabs) {
-            if (user.getTaches().size()>0) {
-
-
-            UserTaskSummaryDTO summary = new UserTaskSummaryDTO();
-            summary.setEmail(user.getEmail());
-            Long a = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.NON_COMMENCE).count();
-            Long r = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_ATTENTE).count();
-            Long z = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_COURS).count();
-            Long b = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.TERMINE).count();
-
-            if ((r + a + z + b) == 0) {
-
-                summary.setNonCommenceCount(0);
-                summary.setEnAttenteCount(0);
-                summary.setEnCoursCount(0);
-                summary.setTermineCount(0);
-
-            } else {
-                long aresult = (a * 100) / (r + a + b + z);
-                summary.setNonCommenceCount((int) aresult);
-                long rressult = (r * 100 / (r + a + z + b));
-                summary.setEnAttenteCount((int) rressult);
-                long zresult = (z * 100) / (r + a + z + b);
-                summary.setEnCoursCount((int) zresult);
-                long bresult = (b * 100) / (r + a + z + b);
-                summary.setTermineCount((int) bresult);
+        for (Role role:userad.getRoles())
+        {
+            if (role.getRole().equals("ADMIN"))
+            {
+                ad=true;
             }
-
-
-
-
-            summaries.add(summary);
-
         }
+
+        if(ad) {
+            List<UserTaskSummaryDTO> summaries = new ArrayList<>();
+
+
+            for (User user : listCollabs) {
+                if (user.getTaches().size() > 0) {
+
+
+                    UserTaskSummaryDTO summary = new UserTaskSummaryDTO();
+                    summary.setEmail(user.getEmail());
+                    Long a = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.NON_COMMENCE).count();
+                    Long r = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_ATTENTE).count();
+                    Long z = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.EN_COURS).count();
+                    Long b = user.getTaches().stream().filter(t -> t.getEtatAvancement() == Etats.TERMINE).count();
+
+                    if ((r + a + z + b) == 0) {
+
+                        summary.setNonCommenceCount(0);
+                        summary.setEnAttenteCount(0);
+                        summary.setEnCoursCount(0);
+                        summary.setTermineCount(0);
+
+                    } else {
+                        long aresult = (a * 100) / (r + a + b + z);
+                        summary.setNonCommenceCount((int) aresult);
+                        long rressult = (r * 100 / (r + a + z + b));
+                        summary.setEnAttenteCount((int) rressult);
+                        long zresult = (z * 100) / (r + a + z + b);
+                        summary.setEnCoursCount((int) zresult);
+                        long bresult = (b * 100) / (r + a + z + b);
+                        summary.setTermineCount((int) bresult);
+                    }
+
+
+                    summaries.add(summary);
+
+                }
+            }
+            List<Tache> listtache = tacheRepository.findAll();
+            model.addAttribute("summaries", summaries);
+            model.addAttribute("summariesCount", listCollabs.size());
+            model.addAttribute("listtache", listtache.size());
+            model.addAttribute("chartData", UserHeurTravaill());
+
+            model.addAttribute("chartData1", graphData());
+
+            return "home3";
         }
-        List<Tache> listtache=tacheRepository.findAll();
-        model.addAttribute("summaries",summaries);
-        model.addAttribute("summariesCount",summaries.size());
-        model.addAttribute("listtache",listtache.size());
-        model.addAttribute("chartData",UserHeurTravaill()) ;
+        else {
+        List<Tache>listtacheorder= tacheRepository.findByUserIsOrderByDateFin(userad);
+            List<Tache>listtacheorder1=new ArrayList<>();
+        for (Tache tache:listtacheorder)
+        {
+            if (!tache.getEtatAvancement().name().equals("TERMINE"))
+            {
+                listtacheorder1.add(tache);
+            }
+        }
+            model.addAttribute("listtache",userad.getTaches().size());
+            model.addAttribute("nbheurs",nbHeuretravaille(userad));
+            model.addAttribute("listtacheorder", listtacheorder1);
+            model.addAttribute("chartData",UserHeurTravaillcollab(userad)) ;
 
-        model.addAttribute("chartData1", graphData());
+            model.addAttribute("chartData1", graphDatacollab(userad));
 
-        return "home3";
+            return "homecollab";
+        }
     }
 
 
@@ -210,14 +239,7 @@ public class UserController {
         excelService.exportCollabToExcel(user, outputStream);
         outputStream.close();
     }
-    @PostMapping("/admin/importCollab")
-    public String importCollabFromExcel(@RequestParam("file") MultipartFile file) throws IOException {
-        InputStream inputStream = file.getInputStream();
-        excelService.importCollabFromExcel(inputStream,userRepository);
-        inputStream.close();
 
-        return "redirect:/admin/collabs";
-    }
 
     private Map<String,Integer> graphData( ) {
         List<Tache> taches=tacheRepository.findAll();
@@ -271,5 +293,71 @@ private Map<String, Integer> UserHeurTravaill()
 
     return usermap;
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    private Map<String,Integer> graphDatacollab(User user ) {
+        User user1=userRepository.findByIdIs(user.getId());
+        Map<String, Integer> Etatmap = new TreeMap<>();
+
+        for (Tache t: user1.getTaches())
+        {
+            if(t.getEtatAvancement().name().equals("EN_ATTENTE"))
+            {
+                EA++;
+                System.out.println(EA);
+            }
+            else if(t.getEtatAvancement().name().equals("EN_COURS"))
+            {
+                EC++;
+                System.out.println(EC);
+            }
+            else if(t.getEtatAvancement().name().equals("NON_COMMENCE"))
+            {
+                NC++;
+                System.out.println(NC);
+            }
+            else if(t.getEtatAvancement().name().equals("TERMINE"))
+            {
+                T++;
+                System.out.println(T);
+            }}
+        Etatmap.put("EN_ATTENTE",EA);
+        Etatmap.put("EN_COURS",EC);
+        Etatmap.put("NON_COMMENCE",NC);
+        Etatmap.put("TERMINE",T);
+
+        return Etatmap ;
+    }
+
+    private Map<String, Integer> UserHeurTravaillcollab(User user)
+    {
+        List<User> listusers = userRepository.findByTachesIsNotNull();
+        User user1=userRepository.findByIdIs(user.getId());
+
+        List<Tache> taches=user1.getTaches();
+        Map<String, Integer> usermap = new TreeMap<>();
+
+        for (Tache tache:taches)
+        {
+            usermap.put(tache.getTitre()+""+tache.getId(),tache.getHeureTravaillees());
+        }
+
+
+        return usermap;
+    }
+    private int nbHeuretravaille( User user)
+    {
+        User user1=userRepository.findByIdIs(user.getId());
+        int cpt=0;
+        for (Tache tache:user1.getTaches())
+        {
+            cpt=cpt+tache.getHeureTravaillees();
+        }
+        return cpt;
+    }
 
 }
