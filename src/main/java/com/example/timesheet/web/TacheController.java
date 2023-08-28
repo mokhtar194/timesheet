@@ -148,14 +148,22 @@ public class TacheController {
     }
     @PostMapping("/save")
 
-    public String save(@Valid Tache tache, BindingResult bindingResult,@RequestParam("coll") String coll,
+    public String save(@Valid Tache tache, BindingResult bindingResult,@RequestParam(name="coll", defaultValue = "") String coll,
                        @RequestParam(name = "startDate", defaultValue = "") String startDate,
                        @RequestParam(name = "endDate", defaultValue = "") String endDate,
                        @RequestParam(name = "collabselect", defaultValue = "") String collabselect,
+                       @RequestParam(name = "usersession", defaultValue = "") String usersession,
                        @RequestParam(name="keyword",defaultValue = "")String keyword,@RequestParam(name="page",defaultValue = "0")int page,
                        @RequestParam(name="fromcollab",required = false)boolean fromcollab){
         if (bindingResult.hasErrors()) return "form";
-        User user=userRepository.findByEmail(coll);
+        User user;
+        if(coll.equals("")){
+             user=userRepository.findByEmail(usersession);
+        }else{
+             user=userRepository.findByEmail(coll);
+        }
+
+
 
         tache.setUser(user);
 

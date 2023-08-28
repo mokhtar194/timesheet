@@ -9,36 +9,38 @@
   <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css">
 </head>
 <body>
+
 <div layout:fragment="content1">
   <div class="p-3" style="margin-left: 20rem">
     <div class="card" style="width: 40rem; height: 95vh;">
       <div class="card-body" style="overflow: scroll">
         <form method="post" th:action="@{/save}">
-          <div class="mb-3 mt-3">
+          <div class="mb-3 mt-3" >
             <label for="id" class="form-label">ID:</label>
             <label th:text="${tache.id}"></label>
             <input type="hidden" class="form-control" id="id" placeholder="ID" name="id" th:value="${tache.id}">
           </div>
-          <div class="mb-3 mt-3">
+
+          <div class="mb-3 mt-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <label for="titre" class="form-label">Titre:</label>
             <input type="text" class="form-control" id="titre" placeholder="Titre" name="titre" th:value="${tache.titre}">
             <span class="text-danger" th:errors="${tache.titre}"></span>
           </div>
-          <div class="mb-3">
+          <div class="mb-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <label for="description" class="form-label">Description:</label>
             <textarea type="text" class="form-control" id="description" placeholder="Description" name="description" th:text="${tache.description}"></textarea>
           </div>
-          <div class="mb-3 mt-3">
+          <div class="mb-3 mt-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <label for="dateDebut" class="form-label">Date de début:</label>
             <input type="Date" class="form-control" id="dateDebut" placeholder="Date de début" name="dateDebut" th:value="${formattedDateDebut}">
             <span class="text-danger" th:errors="${formattedDateDebut}" th:value="${formattedDateDebut}"></span>
           </div>
-          <div class="mb-3 mt-3">
+          <div class="mb-3 mt-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <label for="dateFin" class="form-label">Date de fin:</label>
             <input type="Date" class="form-control" id="dateFin" placeholder="Date de fin" name="dateFin" th:value="${formattedDateFin}">
             <span class="text-danger" th:errors="${formattedDateFin}" th:value="${formattedDateFin}"></span>
           </div>
-          <div class="form-group">
+          <div class="form-group" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <label for="coll">Collabs:</label>
             <select class="form-control" id="coll" name="coll">
               <option th:value="${selectedcollab}" th:text="${selectedcollab}" selected></option>
@@ -75,6 +77,7 @@
             <input type="hidden" name="endDate" th:value="${endDate}">
             <input type="hidden" name="collabselect" th:value="${collabselect}">
             <input type="hidden" name="fromcollab" th:value="${fromcollab}">
+            <input type="hidden" name="usersession" th:value="${#authentication.name}">
             <button type="submit" class="btn btn-primary">Save</button>
           </div>
 

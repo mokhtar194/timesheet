@@ -32,6 +32,7 @@ import java.util.*;
 
 @Controller
 @AllArgsConstructor
+
 public class UserController {
 
     private UserRepository userRepository;
@@ -173,7 +174,7 @@ public class UserController {
         collab.setTaches(userdb.getTaches());
 
 
-        userService.addRoleToUser(collab.getEmail(),roles);
+        userService.addRoleToUser(userdb.getEmail(),roles);
         userRepository.save(collab);
 
         return "redirect:/admin/collabs?page="+page+"&keyword="+keyword;
