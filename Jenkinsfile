@@ -7,6 +7,7 @@ pipeline{
     stage("java version") {
       steps{
         echo "checking the java version..."
+        sh 'echo %JAVA_HOME%'
         sh 'java -version'
        
       }
