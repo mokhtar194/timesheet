@@ -4,6 +4,14 @@ pipeline{
     maven 'Maven'
   }
   stages{
+    stage("java version") {
+      steps{
+        echo "checking the java version..."
+        sh 'java -version'
+       
+      }
+      
+    }
     stage("build jar") {
       steps{
         echo "building the application..."
