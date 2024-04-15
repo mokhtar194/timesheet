@@ -44,6 +44,8 @@ pipeline{
         script{
           echo "deploying the application... "
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6"
+          sh'cd ~'
+          sh'mkdir gotIn'
           sh 'exit'
         }
         
