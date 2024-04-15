@@ -18,6 +18,7 @@ pipeline{
       steps{
         echo "building the application..."
         sh 'mvn package -Dmaven.test.skip'
+        echo "building the application done!"
        
       }
       
