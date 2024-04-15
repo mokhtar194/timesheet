@@ -31,8 +31,10 @@ pipeline{
      
         echo "credentials uploaded!"
         sh 'docker build -t mokhtar194/timesheet:tm-2.0 .'
+          echo "docker image built..."
         sh "echo $PASS | docker login -u $USER --password-stdin"
         sh ' docker push  mokhtar194/timesheet:tm-2.0 '
+          echo "docker image pushed..."
         }
       }
       
