@@ -43,10 +43,8 @@ pipeline{
       steps{
         script{
           echo "deploying the application... "
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 mkdir /gotIn"
           
-          sh'mkdir /gotIn'
-          sh 'exit'
         }
         
         
