@@ -1,6 +1,9 @@
 pipeline{
   agent any 
-  
+  tools{
+         maven 'Maven'
+         jdk 'OpenJDK'
+           }
   stages{
     stage("java version") {
       steps{
