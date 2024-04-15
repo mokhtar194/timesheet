@@ -27,10 +27,13 @@ pipeline{
       steps{
         echo "building the docker image..."
         withCredentials([usernamePassword(credentialsId:'docker-hub-repo',passwordVariable:'PASS',usernameVariable:'USER')])
+        {
+     
         echo "credentials uploaded!"
         sh 'docker build -t mokhtar194/timesheet:tm-2.0 .'
         sh "echo $PASS | docker login -u $USER --paswword-stdin"
         sh ' docker push  mokhtar194/timesheet:tm-2.0 '
+        }
       }
       
     }
