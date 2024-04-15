@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+
+ mysql:
+
+   image: mysql
+
+   environment:
+
+      MYSQL_DATABASE: db
+
+      MYSQL_ROOT_PASSWORD: MYSQL_ALLOW_EMPTY_PASSWORD=yes 
+
+   ports:
+
+     - "3306:3306"
+
+   volumes:
+
+     - mysql_data:/var/lib/mysql
+
+   networks:
+
+     - mynetwork
+
+
+
+ phpmyadmin:
+
+   image: phpmyadmin
+
+   environement:
+
+     - PMO_HOST: mysql
+
+   ports:
+
+     - "8081:80"
+
+   depends_on:
+
+     - mysql
+
+   networks:
+
+     - mynetwork
+
+    
+
+networks:
+
+  mynetwork:
+
+volumes:
+
+  mysql_data:
