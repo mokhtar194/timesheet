@@ -42,11 +42,11 @@ pipeline{
     stage("deploy") {
       steps{
         script{
-          echo "deploying the application... "
+          echo "deploying the application... qwWxneG6abGr#qq"
           withCredentials([usernamePassword(credentialsId:'docker-hub-repo',passwordVariable:'PASS',usernameVariable:'USER')])
         {
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 echo $PASS | docker login -u $USER --password-stdin"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull  mokhtar194/timesheet:tm-2.0 "
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 echo $PASS | docker login -u $USER --password-stdin / docker pull  mokhtar194/timesheet:tm-2.0"
+          
         }
         }
         
