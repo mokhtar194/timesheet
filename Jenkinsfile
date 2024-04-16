@@ -32,10 +32,10 @@ pipeline{
         {
      
         echo "credentials uploaded!"
-        sh 'docker build -t mokhtar194/timesheet:tm-3.0 .'
+        sh 'docker build -t mokhtar194/timesheet:tm-4.0 .'
           echo "docker image built..."
         sh "echo $PASS | docker login -u $USER --password-stdin"
-        sh ' docker push  mokhtar194/timesheet:tm-3.0 '
+        sh ' docker push  mokhtar194/timesheet:tm-4.0 '
           echo "docker image pushed..."
         }
       }
@@ -47,8 +47,8 @@ pipeline{
           echo "deploying the application... qwWxneG6abGr#qq"
           withCredentials([usernamePassword(credentialsId:'docker-hub-repo',passwordVariable:'PASS',usernameVariable:'USER')])
         {
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull mokhtar194/timesheet:tm-3.0"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 -d --network=mysql-phpmyadmin mokhtar194/timesheet:tm-3.0"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull mokhtar194/timesheet:tm-4.0"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 -d --network=mysql-phpmyadmin mokhtar194/timesheet:tm-4.0"
         }
         }
         
