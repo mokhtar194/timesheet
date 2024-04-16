@@ -48,7 +48,9 @@ pipeline{
           withCredentials([usernamePassword(credentialsId:'docker-hub-repo',passwordVariable:'PASS',usernameVariable:'USER')])
         {
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull mokhtar194/timesheet:tm-3.0"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 -d --network=mynetwork mokhtar194/timesheet:tm-3.0"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 -d --network=mysql-phpmyadmin mokhtar194/timesheet:tm-3.0
+
+"
         }
         }
         
