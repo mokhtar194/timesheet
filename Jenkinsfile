@@ -16,6 +16,23 @@ pipeline{
       }
       
     }
+    stage(" increment stage"){
+                steps{
+                      script{
+                         echo ' increment app version..'
+                            sh'mvn -f pom.xml build-helper:parse-version versions:set \
+                             -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+                             versions:commit'
+                            echo 'befor read'
+                            def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                             echo 'after read'
+                            def version = matcher[0][1]
+                             echo 'after matcher'
+                            env.IMAGE_NAME="$version-$BUILD_NUMBER"
+                          echo 'end incre '
+                              }
+                      }
+                                   }
     stage("build jar") {
       steps{
         echo "building the application..."
@@ -32,10 +49,10 @@ pipeline{
         {
      
         echo "credentials uploaded!"
-        sh 'docker build -t mokhtar194/timesheet:tm-5.1 .'
+        sh "docker build -t mokhtar194/timesheet:${IMAGE_NAME} ."
           echo "docker image built..."
         sh "echo $PASS | docker login -u $USER --password-stdin"
-        sh ' docker push  mokhtar194/timesheet:tm-5.1 '
+        sh " docker push  mokhtar194/timesheet:${IMAGE_NAME} "
           echo "docker image pushed..."
         }
       }
@@ -47,8 +64,10 @@ pipeline{
           echo "deploying the application... qwWxneG6abGr#qq"
           withCredentials([usernamePassword(credentialsId:'docker-hub-repo',passwordVariable:'PASS',usernameVariable:'USER')])
         {
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull mokhtar194/timesheet:tm-5.1"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 -d --network=mysql-phpmyadmin mokhtar194/timesheet:tm-5.1"
+          sh'sshpass -p "Ubuntu" ssh root@192.68.100.6 docker rmi $(docker images "mokhtar194/t*")'
+          sh'sshpass -p "Ubuntu" ssh root@192.68.100.6 docker rmi $(docker images "mokhtar194/t*")'
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull mokhtar194/timesheet:${IMAGE_NAME}"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 --name=timesheet -d --network=mysql-phpmyadmin mokhtar194/timesheet:${IMAGE_NAME}"
         }
         }
         
