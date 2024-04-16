@@ -7,7 +7,7 @@ pipeline{
   stages{
     stage("java version") {
       steps{
-        echo "checking the java version....."
+        echo "checking the java version..."
         sh 'echo %JAVA_HOME%'
         sh 'java -version'
         sh 'ifconfig -a'
