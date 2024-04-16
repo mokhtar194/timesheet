@@ -27,8 +27,8 @@ public class TimesheetApplication {
     CommandLineRunner commandLineRunnerUserDetails(UserService userService){
         return args -> {
            // User addNewUser(String nom, String prenom,  String email,String password, String confirmPassword);
-            //  userService.addNewRole("COllAB");
-            // userService.addNewRole("ADMIN");
+             userService.addNewRole("COllAB");
+             userService.addNewRole("ADMIN");
              //userService.addNewUser("aziz", "azizaziz","aziz@gmail.com","1234", "1234");
           //   userService.addRoleToUser("aziz@gmail.com","ADMIN");
          //   userService.addNewUser("aziz1", "azizaziz1","aziz1@gmail.com","1234", "1234");
@@ -38,11 +38,11 @@ public class TimesheetApplication {
             // userService.addNewUser("user3","1234","user3@gmail.com","1234");
             //  userService.addNewUser("user4","1234","user4@gmail.com","1234");
 
-            //  userService.addNewUser("admin","1234","admin@gmail.com","1234");
+              userService.addNewUser("admin","1234","admin@gmail.com","1234");
             // userService.addRoleToUser("user3","USER");
             //userService.addRoleToUser("user4","USER");
-            //  userService.addRoleToUser("admin","USER");
-            //  userService.addRoleToUser("admin","ADMIN");
+             userService.addRoleToUser("admin","USER");
+              userService.addRoleToUser("admin","ADMIN");
 
         };
     }
