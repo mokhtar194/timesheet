@@ -19,7 +19,7 @@ pipeline{
     stage(" increment stage"){
                 steps{
                       script{
-                         echo ' increment app version....'
+                         echo ' increment app version.....'
                             sh'mvn -f pom.xml build-helper:parse-version versions:set \
                              -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                              versions:commit'
