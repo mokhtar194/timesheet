@@ -64,8 +64,9 @@ pipeline{
           echo "deploying the application... qwWxneG6abGr#qq"
           withCredentials([usernamePassword(credentialsId:'docker-hub-repo',passwordVariable:'PASS',usernameVariable:'USER')])
         {
-          sh'sshpass -p "Ubuntu" ssh root@192.68.100.6 docker rmi $(docker images "mokhtar194/t*")'
-          sh'sshpass -p "Ubuntu" ssh root@192.68.100.6 docker rmi $(docker images "mokhtar194/t*")'
+          echo"remove the images step"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker rmi $(docker images 'mokhtar194/t*')"
+          echo"remove the images step done"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull mokhtar194/timesheet:${IMAGE_NAME}"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 --name=timesheet -d --network=mysql-phpmyadmin mokhtar194/timesheet:${IMAGE_NAME}"
         }
