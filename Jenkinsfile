@@ -68,7 +68,7 @@ pipeline{
           //sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker rmi \$(docker images 'mokhtar194/t*')"
           //echo"remove the images step done"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull mokhtar194/timesheet:${IMAGE_NAME}"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 --name=timesheet${IMAGE_NAME} -d --network=mysql-phpmyadmin mokhtar194/timesheet:${IMAGE_NAME}"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085 --name=timesheet${IMAGE_NAME} -d  mokhtar194/timesheet:${IMAGE_NAME}"
         }
         }
         
