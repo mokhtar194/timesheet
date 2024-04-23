@@ -1,121 +1,20 @@
-version: '3.8'
-
-services:
-
- mysql:
-
-   image: mysql
-
-   environment:
-
-      MYSQL_DATABASE: db
-
-      MYSQL_ROOT_PASSWORD: MYSQL_ALLOW_EMPTY_PASSWORD=yes 
-
-   ports:
-
-     - "3306:3306"
-
-   volumes:
-
-     - mysql_data:/var/lib/mysql
-
-   networks:
-
-     - mynetwork
-
-
-
- phpmyadmin:
-
-   image: phpmyadmin
-
-   environement:
-
-     - PMO_HOST: mysql
-
-   ports:
-
-     - "8081:80"
-
-   depends_on:
-
-     - mysql
-
-   networks:
-
-     - mynetwork
-
-    
-
-networks:
-
-  mynetwork:
-
-volumes:
-
-  mysql_data:
-
-
-
-version: '3.8'
-
-services:
-
-  mysql:
-    image: mysql
-    environment:
-      MYSQL_DATABASE: db
-      MYSQL_ROOT_PASSWORD: MYSQL_ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - mynetwork
-
-  phpmyadmin:
-    image: phpmyadmin
-    environment:
-      - PMA_HOST: mysql
-    ports:
-      - "8081:80"
-    depends_on:
-      - mysql
-    networks:
-      - mynetwork
-
-networks:
-  mynetwork:
-
-volumes:
-  mysql_data:
-
-
-
-
-
-
-
 version: '3'
 
 
 
 networks:
 
-    mysql-phpmyadmin:
+  mysql-phpmyadmin:
 
-        name: mysql-phpmyadmin
+    name: mysql-phpmyadmin
 
-        # use the bridge driver
-
-        driver: bridge
+    driver: bridge
 
 
 
 volumes:
 
-    mysqldata1:
+  mysqldata:
 
 
 
@@ -123,19 +22,15 @@ services:
 
     mysql:
 
-        image: mysql:8.0
+        image: mysql:latest
+
+        restart: always
 
         container_name: mysql
 
         environment:
 
-
-
-            MYSQL_ROOT__PASSWORD: pass
-
-            MYSQL_DATABASE: db
-
-
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
 
         ports:
 
@@ -143,21 +38,17 @@ services:
 
         volumes:
 
-            - mysqldata1:/var/lib/mysql
+            - mysqldata:/var/lib/mysql
 
         networks:
 
-            mysql-phpmyadmin:
-
-                aliases:
-
-                 - mysql
+            - mysql-phpmyadmin
 
 
 
     phpmyadmin:
 
-        image: phpmyadmin:5.2.0
+        image: phpmyadmin:latest
 
         container_name: phpmyadmin
 
@@ -177,20 +68,5 @@ services:
 
         networks:
 
-            mysql-phpmyadmin:
-
-                aliases:
-
-                 - phpmyadmin
-
-Database is uninitialized and password option is not specified
-
-    You need to specify one of the following as an environment variable:
-
-    - MYSQL_ROOT_PASSWORD
-
-    - MYSQL_ALLOW_EMPTY_PASSWORD
-
-    - MYSQL_RANDOM_ROOT_PASSWORD
-
+            - mysql-phpmyadmin
 
