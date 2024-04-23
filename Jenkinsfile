@@ -69,8 +69,8 @@ pipeline{
           //echo"remove the images step done"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 echo $PASS | docker login -u $USER   --password-stdin 192.68.100.5:8443"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker pull 192.68.100.5:8443/timesheet:${IMAGE_NAME}"
-          def version = sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker ps -aq "
-          env.CONTAINER_NAME="$version"
+          def cont_id = sh(script:"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker ps -aq ",returnStdout:true).trim()
+          env.CONTAINER_NAME="$cont_id"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker stop ${CONTAINER_NAME}"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085  --network host --name=timesheet${IMAGE_NAME}  -d  192.68.100.5:8443/timesheet:${IMAGE_NAME}"
         }
