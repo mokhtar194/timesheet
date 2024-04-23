@@ -61,7 +61,7 @@ pipeline{
     stage("deploy") {
       steps{
         script{
-          echo "deploying the application... qwWxneG6abGr#qq"
+          echo "deploying the application... "
           withCredentials([usernamePassword(credentialsId:'nexus-cred',passwordVariable:'PASS',usernameVariable:'USER')])
         {
          // echo"remove the images step"
