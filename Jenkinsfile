@@ -77,8 +77,9 @@ pipeline{
           echo"////////////////////////////////////////////////////////"
           sh"ls"
           echo"////////////////////////////////////////////////////////"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 ls"
-
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 ls "
+          sh"sshpass -p 'Ubuntu' scp k8s.yml root@192.68.100.6:~/workspace"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 ls -a"
 
 
         }
