@@ -98,7 +98,7 @@ pipeline{
      stage("commit version"){
       steps{
          script{
-           withCredentials([string(credentialsId:'github_token',passwordVariable:'PASS',usernameVariable:'USER')]){
+           withCredentials([(credentialsId:'github_token',passwordVariable:'PASS',usernameVariable:'USER')]){
            sh 'git config --global user.email "jenkins@example.com" '
             sh 'git config --global user.name "jenkins"'
 
@@ -106,7 +106,7 @@ pipeline{
              sh 'git branch'
              sh 'git config --list '
 
-             sh "git remote set-url origin https://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@github.com/mokhtar194/timesheet.git"
+             sh "git remote set-url origin https://$PASS@github.com/mokhtar194/timesheet.git"
              https://github.com/mokhtar194/timesheet.git
              sh 'git add .'
              sh 'git commit -m "c1:version bump [ci skip] "'
