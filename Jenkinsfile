@@ -78,7 +78,7 @@ pipeline{
           sh"ls"
           echo"////////////////////////////////////////////////////////"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 ls "
-          sh'''sed -i 's|image: 192.68.100.5:8443/timesheet:[^"]*|image: 192.68.100.5:8443/timesheet:${IMAGE_NAME}|g' k8s.yml '''
+          sh """sed -i 's|image: 192.68.100.5:8443/timesheet:[^"]*|image: 192.68.100.5:8443/timesheet:${IMAGE_NAME}|g' k8s.yml""" 
           sh"sshpass -p 'Ubuntu' scp k8s.yml root@192.68.100.6:~/workspace"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6  microk8s kubectl apply -f k8s.yml"
 
