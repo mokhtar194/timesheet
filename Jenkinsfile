@@ -92,6 +92,13 @@ pipeline{
       }
       
     }
+    stage(){
+      steps{
+        scripts{
+          sh"curl 10.152.183.240/login"
+        }
+      }
+    }
      stage("commit version"){
       steps{
          script{
