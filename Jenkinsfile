@@ -95,7 +95,7 @@ pipeline{
     stage("Test deployment"){
       steps{
         scripts{
-          sh"curl 10.152.183.240/login"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 curl 10.152.183.240/login"
         }
       }
     }
