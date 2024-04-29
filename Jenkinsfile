@@ -76,6 +76,9 @@ pipeline{
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl set image deployment.apps/tm tm=192.68.100.5:8443/timesheet:${IMAGE_NAME} -n nexus-namespace"
           echo"////////////////////////////////////////////////////////"
           sh"ls"
+          echo"////////////////////////////////////////////////////////"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 ls"
+
 
 
         }
