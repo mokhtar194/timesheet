@@ -16,6 +16,11 @@ pipeline{
       }
       
     }
+    stage('Checkout') {
+                steps {
+                    scmSkip(deleteBuild: true, skipPattern:'.*\\[ci skip\\].*')
+                }
+            }
     stage(" increment stage"){
                 steps{
                       script{
@@ -90,6 +95,27 @@ pipeline{
       }
       
     }
+     stage("commit version"){
+      steps{
+         script{
+           withCredentials([string(credentialsId:'github_token',passwordVariable:'PASS',usernameVariable:'USER')]){
+           sh 'git config --global user.email "jenkins@example.com" '
+            sh 'git config --global user.name "jenkins"'
+
+             sh 'git status'
+             sh 'git branch'
+             sh 'git config --list '
+
+             sh "git remote set-url origin https://${PASS}@github.com/mokhtar194/timesheet.git"
+             https://github.com/mokhtar194/timesheet.git
+             sh 'git add .'
+             sh 'git commit -m "c1:version bump [ci skip] "'
+
+             sh 'git push origin HEAD:main'
+           }
+               }
+            }
+         }
   
   }
 }
