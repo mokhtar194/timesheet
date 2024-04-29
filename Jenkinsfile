@@ -79,10 +79,7 @@ pipeline{
           //sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker stop ${CONTAINER_NAME}"
           //sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085  --network host --name=timesheet${IMAGE_NAME}  -d  192.68.100.5:8443/timesheet:${IMAGE_NAME}"
          //sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl set image deployment.apps/tm tm=192.68.100.5:8443/timesheet:${IMAGE_NAME} -n nexus-namespace"
-          echo"////////////////////////////////////////////////////////"
-          sh"ls"
-          echo"////////////////////////////////////////////////////////"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 ls "
+         
           sh """sed -i 's|image: 192.68.100.5:8443/timesheet:[^"]*|image: 192.68.100.5:8443/timesheet:${IMAGE_NAME}|g' k8s.yml""" 
           sh"sshpass -p 'Ubuntu' scp k8s.yml root@192.68.100.6:~/workspace"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6  microk8s kubectl apply -f ~/workspace/k8s.yml"
