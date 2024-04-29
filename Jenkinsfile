@@ -106,7 +106,7 @@ pipeline{
              sh 'git branch'
              sh 'git config --list '
 
-             sh "git remote set-url origin https://${PASS}@github.com/mokhtar194/timesheet.git"
+             sh "git remote set-url origin https://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@github.com/mokhtar194/timesheet.git"
              https://github.com/mokhtar194/timesheet.git
              sh 'git add .'
              sh 'git commit -m "c1:version bump [ci skip] "'
