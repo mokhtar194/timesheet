@@ -6,7 +6,7 @@ pipeline{
         
            }
   stages{
-    stage("java version") {
+    stage("Java version") {
       steps{
         echo "checking the java version..."
         sh 'echo %JAVA_HOME%'
@@ -21,7 +21,7 @@ pipeline{
                     scmSkip(deleteBuild: true, skipPattern:'.*\\[ci skip\\].*')
                 }
             }
-    stage(" increment stage"){
+    stage("Increment stage"){
                 steps{
                       script{
                          echo ' increment app version.....'
@@ -38,7 +38,7 @@ pipeline{
                               }
                       }
                                    }
-    stage("build jar") {
+    stage("Build jar") {
       steps{
         echo "building the application..."
         sh 'mvn package -Dmaven.test.skip'
@@ -47,7 +47,7 @@ pipeline{
       }
       
     }
-    stage("build image") {
+    stage("Build image") {
       steps{
         echo "building the docker image..."
         withCredentials([usernamePassword(credentialsId:'nexus-cred',passwordVariable:'PASS',usernameVariable:'USER')])
@@ -63,7 +63,7 @@ pipeline{
       }
       
     }
-    stage("deploy") {
+    stage("Deployment") {
       steps{
         script{
           echo "deploying the application... "
@@ -92,14 +92,14 @@ pipeline{
       }
       
     }
-    stage(){
+    stage("Test deployment"){
       steps{
         scripts{
           sh"curl 10.152.183.240/login"
         }
       }
     }
-     stage("commit version"){
+     stage("Commit version"){
       steps{
          script{
            withCredentials([usernamePassword(credentialsId:'github_token',passwordVariable:'PASS',usernameVariable:'USER')]){
