@@ -41,6 +41,7 @@ pipeline{
     stage("Build jar") {
       steps{
         echo "building the application..."
+        sh"rm -rf target/"
         sh 'mvn package -Dmaven.test.skip'
         echo "building the application done!"
        
