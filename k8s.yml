@@ -27,6 +27,7 @@ metadata:
   name: tm
   namespace: nexus-namespace
 spec:
+  clusterIP: 10.152.183.167
   selector:
     app: tm
   ports:
