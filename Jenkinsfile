@@ -101,7 +101,9 @@ pipeline{
         script{
           echo"//////////////////////////////////////////////////////////"
           echo"Testing the deployment"
+          sleep time: 10, unit: 'SECONDS'
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 curl 10.152.183.167/login"
+          sleep time: 10, unit: 'SECONDS'
           sh"ssh root@192.68.100.7 curl 10.152.183.167/login"
         }
       }
