@@ -44,9 +44,16 @@
         state: present
 
 
+    - name: check if nexus namespace exists
+      shell: microk8s kubectl get namespace nexus-namespace | grep -q nexus-namespace
+      register: namespace_check
+      ignore_errors: true
+      
     - name: create namespace
       command: microk8s kubectl create ns nexus-namespace
-      when: namespace_check.rc !=0
+      when: namespace_check.rc != 0
+
+      
     - name: allow private registry to k8s
       copy:
           dest: "/var/snap/microk8s/current/args/certs.d/192.68.100.5:8443/hosts.toml"
