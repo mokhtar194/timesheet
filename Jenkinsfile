@@ -99,7 +99,7 @@ pipeline{
     stage("Test deployment"){
       steps{
         script{
-          echo"//////////////////////////////////////////////////////////"
+          echo"/////////////////////////////////////////////////"
           echo"Testing the deployment"
           sleep time: 30, unit: 'SECONDS'
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 curl 10.152.183.167/login"
