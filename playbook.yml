@@ -53,6 +53,15 @@
       command: microk8s kubectl create ns nexus-namespace
       when: namespace_check.rc != 0
 
+    - name: check if nexus secret exists
+      shell: microk8s kubectl get secrets my-nexus-registry-secret -n nexus-namespace | grep -q my-nexus-registry-secret
+      register: secret_check
+      ignore_errors: true
+      
+    - name: create secret
+      command: kubectl create secret docker-registry my-nexus-registry-secret --docker-server=192.68.100.5:8443 --docker-username=nexus --docker-password=nexus --docker-email=nexus@gmail.com --namespace nexus-namespace
+      when: secret_check.rc != 0
+
       
     - name: allow private registry to k8s
       copy:
