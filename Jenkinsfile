@@ -101,9 +101,9 @@ pipeline{
         script{
           echo"//////////////////////////////////////////////////////////"
           echo"Testing the deployment"
-          sleep time: 10, unit: 'SECONDS'
+          sleep time: 30, unit: 'SECONDS'
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 curl 10.152.183.167/login"
-          sleep time: 10, unit: 'SECONDS'
+          //sleep time: 30, unit: 'SECONDS'
           sh"ssh root@192.68.100.7 curl 10.152.183.167/login"
            def podNames = sh(script: 'microk8s kubectl get pods -n nexus-namespace', returnStdout: true).trim().split(" ")
                     def randomIndex = Math.abs(new Random().nextInt() % podNames.size())
