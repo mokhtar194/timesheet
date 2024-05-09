@@ -111,8 +111,10 @@ pipeline{
                     env.STRING="${SELECTED_POD} -n nexus-namespace"
                     echo "Selected Pod: ${SELECTED_POD}"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl get pods -o name -n nexus-namespace"
-          echo "************* ${STRING}"
+          
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl delete ${STRING}"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl get pods -o name -n nexus-namespace"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl delete --all pods -n nexus-namespace"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl get pods -o name -n nexus-namespace"
         }
       }
