@@ -108,10 +108,10 @@ pipeline{
            def podNames = sh(script: "sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl get pods -n nexus-namespace", returnStdout: true).trim().split(" ")
                     def randomIndex = Math.abs(new Random().nextInt() % podNames.size())
                     env.SELECTED_POD = podNames[randomIndex]
-                    echo "Selected Pod: ${env.SELECTED_POD}"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubctl get pods -n nexus-namespace"
+                    echo "Selected Pod: ${SELECTED_POD}"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl get pods -n nexus-namespace"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl delete pod ${env.SELECTED_POD} -n nexus-namespace"
-          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubctl get pods -n nexus-namespace"
+          sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl get pods -n nexus-namespace"
         }
       }
     }
