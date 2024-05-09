@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: tm
-          image: 192.68.100.5:8443/timesheet:3.1.2-162
+          image: 192.68.100.5:8443/timesheet:3.1.2-170
           ports:
            - containerPort: 8085
       imagePullSecrets:
