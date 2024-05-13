@@ -137,6 +137,7 @@ pipeline{
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl get pods -o name -n nexus-namespace"
           echo"/////////////////////////////////////////////////"
           echo"deleting a default replica "
+          echo"${STRING}"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl delete ${STRING}"
           echo"/////////////////////////////////////////////////"
           echo"checking if kubernetes have created a new replica "
