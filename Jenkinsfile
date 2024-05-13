@@ -8,10 +8,11 @@ pipeline{
   stages{
     stage("Java version") {
       steps{
+        echo"/////////////////////////////////////////////////"
         echo "checking the java version..."
         sh 'echo %JAVA_HOME%'
         sh 'java -version'
-        sh 'ifconfig -a'
+      
        
       }
       
@@ -24,6 +25,7 @@ pipeline{
     stage("Increment stage"){
                 steps{
                       script{
+                        echo"/////////////////////////////////////////////////"
                          echo ' increment app version...'
                             sh'mvn -f pom.xml build-helper:parse-version versions:set \
                              -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
@@ -40,6 +42,7 @@ pipeline{
                                    }
     stage("Build jar") {
       steps{
+        echo"/////////////////////////////////////////////////"
         echo "building the application..."
         sh"rm -rf target/"
         sh 'mvn package -Dmaven.test.skip'
@@ -50,6 +53,7 @@ pipeline{
     }
     stage("Build image") {
       steps{
+        echo"/////////////////////////////////////////////////"
         echo "building the docker image..."
         withCredentials([usernamePassword(credentialsId:'nexus-cred',passwordVariable:'PASS',usernameVariable:'USER')])
         {
@@ -67,6 +71,7 @@ pipeline{
     stage("Deployment") {
       steps{
         script{
+          echo"/////////////////////////////////////////////////"
           echo "deploying the application... "
           withCredentials([usernamePassword(credentialsId:'nexus-cred',passwordVariable:'PASS',usernameVariable:'USER')])
         {
@@ -80,18 +85,24 @@ pipeline{
           //sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker stop ${CONTAINER_NAME}"
           //sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 docker run -p 8085:8085  --network host --name=timesheet${IMAGE_NAME}  -d  192.68.100.5:8443/timesheet:${IMAGE_NAME}"
          //sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 microk8s kubectl set image deployment.apps/tm tm=192.68.100.5:8443/timesheet:${IMAGE_NAME} -n nexus-namespace"
+          echo"/////////////////////////////////////////////////"
           echo"runing the ansible playbook on the 192.68.100.7 machine"
           sh"ansible-playbook -v playbook.yml"
+          echo"/////////////////////////////////////////////////"
           echo"incrementing the image tag on the kubernetes deployment file"
           sh """sed -i 's|image: 192.68.100.5:8443/timesheet:[^"]*|image: 192.68.100.5:8443/timesheet:${IMAGE_NAME}|g' k8s.yml""" 
+          echo"/////////////////////////////////////////////////"
           echo"copying the k8s deployment file into 192.68.100.6 machine"
           sh"sshpass -p 'Ubuntu' scp k8s.yml root@192.68.100.6:~/workspace"
+          echo"/////////////////////////////////////////////////"
           echo"applying the k8s deployment file on the 192.68.100.6 machine"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6  microk8s kubectl apply -f ~/workspace/k8s.yml"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6  rm ~/workspace/k8s.yml"
+          echo"/////////////////////////////////////////////////"
           echo"copying the k8s deployment file into 192.68.100.7 machine"
           sh" scp k8s.yml root@192.68.100.7:~/workspace"
           sh"ssh root@192.68.100.7  microk8s kubectl apply -f ~/workspace/k8s.yml"
+          echo"/////////////////////////////////////////////////"
           echo"applying the k8s deployment file on the 192.68.100.7 machine"
           sh"ssh root@192.68.100.7 rm ~/workspace/k8s.yml"
 
@@ -108,6 +119,7 @@ pipeline{
           echo"/////////////////////////////////////////////////"
           echo"Testing the deployment"
           sleep time: 30, unit: 'SECONDS'
+          echo"/////////////////////////////////////////////////"
           echo"curling the login page on the 192.68.100.6 machine"
           sh"sshpass -p 'Ubuntu' ssh root@192.68.100.6 curl 10.152.183.167/login"
           //sleep time: 30, unit: 'SECONDS'
