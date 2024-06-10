@@ -6,17 +6,7 @@ pipeline{
         
            }
   stages{
-    stage("Java version") {
-      steps{
-        echo"/////////////////////////////////////////////////"
-        echo "checking the java version..."
-        sh 'echo %JAVA_HOME%'
-        sh 'java -version'
-      
-       
-      }
-      
-    }
+  
     stage('Checkout') {
                 steps {
                     scmSkip(deleteBuild: true, skipPattern:'.*\\[ci skip\\].*')
